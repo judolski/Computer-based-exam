@@ -1,0 +1,147 @@
+<div class="container-fluid">
+    <div class="form-size">
+
+        <form [formGroup]="signupForm" (ngSubmit)="register()" style="margin-top: 5%;" novalidate>
+            <div  class="form-header">
+                <h3>REGISTER FOR YOUR EXAMS</h3>
+            </div>
+            <p>
+                <mat-form-field class="half-width">
+                    <input type="text" class="" id="firstname" formControlName="firstname" placeholder="FIRST NAME" matInput>
+                </mat-form-field>
+                <mat-error *ngIf="(f['firstname'].touched || f['firstname'].dirty) && f['firstname'].invalid">
+                    <small *ngIf="f['firstname'].errors?.['minlength'] && !f['firstname'].errors?.['pattern']">
+                        First name should be at least 2 character long.
+                    </small>
+                    <small *ngIf=" f['firstname'].errors?.['required']">
+                        First name is required.
+                    </small>
+                    <small *ngIf=" f['firstname'].errors?.['pattern']">
+                        First name must contain only alphabets.
+                    </small>
+                </mat-error>
+            </p>
+            <p>
+                <mat-form-field class="half-width">
+                    <input type="text" class="" id="lastname" formControlName="lastname" placeholder="LAST NAME" matInput minlength="2">
+                </mat-form-field>
+                <mat-error *ngIf="(f['lastname'].touched || f['lastname'].dirty) && f['lastname'].invalid">
+                    <small *ngIf="f['lastname'].errors?.['minlength'] && !f['lastname'].errors?.['pattern']">
+                        Last name should be at least 2 character long.
+                    </small>
+                    <small *ngIf=" f['lastname'].errors?.['required']">
+                        Last name is required.
+                    </small>
+                    <small *ngIf=" f['lastname'].errors?.['pattern']">
+                        Last name must contain only alphabets.
+                    </small>
+                </mat-error>
+            </p>
+            <p>
+                <mat-form-field class="half-width">
+                    <input type="text" class="" id="middlename" formControlName="middlename" placeholder="MIDDLE NAME" matInput>
+                </mat-form-field>
+                <mat-error *ngIf="f['middlename'].dirty">
+                    <small *ngIf="f['middlename'].errors?.['pattern']">
+                        Middle name must contain only alphabets.
+                    </small>
+                </mat-error>    
+            </p>
+            <p>
+                <mat-form-field appearance="fill">
+                    <mat-label>Gender</mat-label>
+                    <select matNativeControl formControlName="gender">
+                        <option  *ngFor="let sex of genderType" [value]="sex">{{ sex }}</option>
+                    </select>
+                </mat-form-field>
+                <mat-error *ngIf="f['gender'].touched && f['gender'].invalid">
+                    <small *ngIf="f['gender'].errors?.['required']">
+                        Gender is required.
+                    </small>
+                </mat-error>
+            </p>
+            <p>
+                <mat-form-field class="half-width">
+                    <mat-label>Phone Number</mat-label>
+                    <span matPrefix>+234 &nbsp;</span>
+                    <input type="tel" formControlName="phone" placeholder="eg. 7045293426" matInput>
+                </mat-form-field>
+                <mat-error *ngIf="(f['phone'].touched || f['phone'].dirty) && f['phone'].invalid">
+                    <small *ngIf="f['phone']?.errors['required']">
+                        Phone number is required.
+                    </small>
+                    <small *ngIf="f['phone']?.errors['pattern']">
+                         Enter valid Phone number  format.
+                    </small>
+                    <small *ngIf="f['phone']?.errors['minlength'] && !f['phone']?.errors['pattern']">
+                        Enter your 10 digit phone number.
+                   </small>
+                   <small *ngIf="f['phone']?.errors['maxlength'] && !f['phone']?.errors['pattern']">
+                    Phone number must be 10 digits.
+                    </small>
+                </mat-error>
+            </p>
+            <p>
+                <mat-form-field class="half-width">
+                    <input type="email" formControlName="email" placeholder="Email" matInput>
+                </mat-form-field>
+                <mat-error *ngIf="f['email'].touched && f['email'].invalid">
+                    <small *ngIf="f['email'].errors && f['email'].errors['required']">
+                        Email is required.
+                    </small>
+                    <small *ngIf="f['email'].errors && f['email'].errors['email']">
+                        Please enter valid email.
+                    </small>
+                </mat-error>
+            </p>
+            <p>
+                <mat-form-field class="half-width">
+                    <input type="text" class="" id="password" formControlName="password" placeholder="PASSWORD" matInput>
+                </mat-form-field>
+                <mat-error *ngIf="f['password'].touched && f['password'].invalid">
+                    <small *ngIf="f['password'].errors && f['password'].errors['required']">
+                        Password is required.
+                    </small>
+                    <small *ngIf="f['password'].errors && f['password'].errors['minlengh']">
+                        Password is required.
+                    </small>
+                </mat-error>    
+            </p>
+            <p>
+                <button mat-button type="submit" class="btn btn-primary" [disabled]="signupForm.invalid" (click)="showSpinner()">Register</button> &nbsp;
+                <i>Already registered?<a href="#"> Login</a></i>
+            </p>
+            <br>
+        </form>
+        
+    </div>
+    
+    <div class="container" id="spinner" [ngStyle]="{'display':spinning}" >
+        <mat-spinner></mat-spinner>
+        <h4>Saving.....</h4>
+    </div>
+
+    
+    <div id="overlay" [ngStyle]="{'display':overlay}"></div>
+    <div *ngIf="errorMsg" class="modal container"  tabindex="-1" role="dialog" [ngStyle]="{'display':errMsg}">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h5 class="modal-title" style="color: maroon">Error</h5><br>
+                <mat-error class="fa fa-exclamation-triangle" style="text-align:center; font-size: 18px;" >{{ errorMsg }}</mat-error>
+                <button  class="btn btn-warning" (click)="closeErrorPopup()" style="float: right;">Ok</button>
+            </div>
+        </div>
+    </div>
+    
+    <div *ngIf="successMsg" style="max-width: 600px;" class="modal container" tabindex="-1" role="dialog" [ngStyle]="{'display':succMsg}">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h5 class="modal-title" style="color:seagreen">Success</h5><br>
+                <div class="fa fa-check-circle" style="text-align: center; font-size: 18px; color: seagreen;">{{ successMsg }}</div>
+                <button class="btn btn-success" (click)="closeSuccessPopup()" style="float: right;">Ok</button>
+            </div>
+        </div>
+    </div>
+
+
+</div>

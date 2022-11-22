@@ -1,0 +1,45 @@
+input[type=text]{
+    width: 100% ! important;
+    
+}
+
+mat-form-field {
+    width: 100% ! important;
+}
+
+form {
+    margin: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+mat-error {
+    font-size: 14px;
+    margin-top: -16px;
+    color: red;
+}
+
+.login-btn {
+width: 100%;
+margin-top: 20px;
+height: 45px;
+
+}
+
+.vertical-line {
+    border-left: solid;
+    margin: 3px;
+    height: 30%;
+    position: absolute;
+    left: 50%;
+}
+.content {
+    background-color: rgb(148, 127, 127); 
+    justify-content: center; 
+    margin: 50px;
+   opacity: 0.8;
+   color: whitesmoke;
+}

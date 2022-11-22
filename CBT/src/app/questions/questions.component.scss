@@ -1,0 +1,34 @@
+
+input {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    }
+
+    label {
+        font-size: 18px;
+    }
+
+mat-card-title {
+    text-align: center;  
+    border-radius: 10px;
+}
+
+.don {
+    padding-left: 10px;
+}
+
+.select-option {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+    align-items: flex-start;
+}
+
+mat-radio-button {
+    margin: 10px;
+}
+
+.flex-spacer {
+    flex: 1 1 auto;
+  }
