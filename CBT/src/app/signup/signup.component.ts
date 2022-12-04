@@ -3,6 +3,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NewUser, Gender } from '../model/signupModel';
 import { UserService } from '../services/user.service';
+import { AuthService } from '../services/auth.service';
+
 
 @Component({
   selector: 'app-signup',
@@ -23,7 +25,7 @@ export class SignupComponent implements OnInit {
   spinning = "none";
   overlay = "none";
 
-  constructor(private userService: UserService, 
+  constructor(private userService: UserService, private authService: AuthService, 
     @Inject('BaseURL') public BaseURL:any) { 
     this.createForm();
   }
@@ -60,7 +62,7 @@ export class SignupComponent implements OnInit {
             },(err) => { 
               this.errMsg = "none";
               this.hideSpinner();
-              this.errorMsg = this.userService.catchAuthError(err);
+              this.errorMsg = this.authService.catchAuthError(err);
               return this.errorPopup();
             });
       }

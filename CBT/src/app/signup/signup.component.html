@@ -109,7 +109,7 @@
             </p>
             <p>
                 <button mat-button type="submit" class="btn btn-primary" [disabled]="signupForm.invalid" (click)="showSpinner()">Register</button> &nbsp;
-                <i>Already registered?<a href="#"> Login</a></i>
+                <i>Already registered?<a [routerLink]="['/login']"> Login</a></i>
             </p>
             <br>
         </form>

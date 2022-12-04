@@ -1,13 +1,15 @@
 <div class="container">
     <div *ngIf="questions">
+        <h5 id="timeLeft" [ngStyle]="{'color':timerColor}" style="float:right;">{{hrs}}h : {{mins}}m : {{secs}}s</h5>
+
         <h5 style="margin-top: 40px;"> Question {{ questionIndex+1 }} of {{questions.length}}</h5>
         <mat-card style="margin-bottom: 10px;">
             <div class="" fxLayoutGap="10px" fxLayout="row">
                 <h4 class="don">
-                    <span>{{currentQuestion.num}}.</span>
+                    <span><b>{{currentQuestion.num}}.</b></span>
                 </h4>
                 <h4>
-                    <span> {{currentQuestion.question}}</span>
+                    <span><b>{{currentQuestion.question}}</b></span>
                 </h4>
             </div>
        
@@ -99,11 +101,29 @@
             <button mat-button (click)="goNext()" >
                 Next<span class="fa fa-chevron-right fa-lg"></span>
             </button>
+
             <div class="flex-spacer"></div>
             <button type="submit" (click)="calculate()" mat-button class="btn btn-primary">Submit</button>
         </div>
         
     </div>
 </div>
+
+<!--Score Modal -->
+<div id="overlay" [ngStyle]="{'display':overlayValue}"></div>
+    <div class="container">
+        <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4 class="modal-title" [ngStyle]="{'color':savedScoreColour}">{{scoreSavedStutus}}</h4>
+                    <h5 *ngIf="showScore">Total score: {{ rightAnswer }}</h5>
+                    <h5 *ngIf="showScore">Number of attempted question: {{ totalAnswered }}</h5>
+                    <br>
+                    <button class="btn btn-danger" (click)="closescoreModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 

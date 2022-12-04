@@ -1,21 +1,23 @@
 <div class="container-fluid" style="background-color: whitesmoke;">
-    <div class="content" fxFlex="100" fxLayout="row" fxLayout.lt-sm="column" fxLayoutGap="20px">    
+    <div class="content" fxFlex="100" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px">    
         <div fxFlex="50" fxFlex.lt-md="100">
                 <form [formGroup]="loginForm" novalidate>
                     <h2>Login</h2> 
                     <mat-form-field>
-                        <mat-label style="color:whitesmoke"><i class="fa fa-envelope"></i>Email</mat-label>
+                        <mat-label style="color:whitesmoke"><i class="fa fa-envelope" style="margin-right: 2px"></i>Email</mat-label>
                         <input type="text" id="email" formControlName="email" placeholder="" matInput>
                     </mat-form-field>
                     <mat-error *ngIf="formErrors.email"><i class="fa fa-exclamation-triangle"></i>{{formErrors.email}}</mat-error>
-                    <mat-form-field>
-                        <mat-label style="color:whitesmoke"><i class="fa fa-key"></i>Password</mat-label>
-                        <input type="text" id="password" formControlName="password" placeholder="" matInput>
+                    <mat-error *ngIf="emailMess"><i class="fa fa-exclamation-triangle"></i>{{emailMess}}</mat-error>
+                    <mat-form-field style="margin-top: 15px;">
+                        <mat-label style="color:whitesmoke"><i class="fa fa-key" style="margin-right: 2px"></i>Password</mat-label>
+                        <input type="password" id="password" formControlName="password" placeholder="" matInput>
                     </mat-form-field>
                     <mat-error *ngIf="formErrors.password"><i class="fa fa-exclamation-triangle"></i>{{formErrors.password}}</mat-error>
-                    <button mat-button class="btn btn-danger login-btn"><b>Login</b></button><br>
-                    <div  style="text-align: right;"><a href="">Forgot Password?</a></div><br><br>
-                    <div style="color:whitesmoke;"><i>New to the System? &nbsp;</i> <button class="btn btn-success">Register Here</button></div>            
+                    <mat-error *ngIf="passwordMess"><i class="fa fa-exclamation-triangle"></i>{{passwordMess}}</mat-error>
+                    <button mat-button (click)="login()" class="btn btn-danger login-btn"><b>Login</b></button><br>
+                    <div  style="text-align: right;"><a >Forgot Password?</a></div><br><br>
+                    <div style="color:whitesmoke;"><i>New to the System? &nbsp;</i> <button class="btn btn-success"  [routerLink]="['/signup']">Register Here</button></div>            
                 </form>
         </div>
 
@@ -26,3 +28,17 @@
         </div>
     </div>
 </div>
+
+
+
+<!--manu Modal -->
+<div id="overlay" [ngStyle]="{'display':overlay}"></div>
+    <div class="container">
+        <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button class="btn btn-danger option_button" (click)="startTest()">START TEST</button>
+                </div>
+            </div>
+        </div>
+    </div>

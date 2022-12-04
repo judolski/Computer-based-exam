@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Question } from '../model/setquestion';
 import { QuestionService } from '../services/question.service';
+import { AuthService } from '../services/auth.service';
 
 
 @Component({
@@ -19,7 +20,7 @@ export class SetquestionComponent implements OnInit {
   overlay = "none";
 
 
-  constructor(private questionService:QuestionService, 
+  constructor(private questionService:QuestionService, private authServive: AuthService, 
     @Inject('BaseURL') public BaseURL:any) { 
     this.createForm();
   }
@@ -58,7 +59,7 @@ export class SetquestionComponent implements OnInit {
       }, (err) => {
           this.hideSpinner();
           this.successMsg = "none";
-          this.errorMsg = this.questionService.catchAuthError(err);
+          this.errorMsg = this.authServive.catchAuthError(err);
           this.errorPopup();
       });
     }

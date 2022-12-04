@@ -3,7 +3,6 @@ import { NewUser } from '../model/signupModel';
 import { baseURL } from '../share/baseurl';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, pipe, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,27 +12,27 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   addUser(user:NewUser): Observable<any> {
-    return this.http.post(baseURL + 'user/signup', user);
+    return this.http.post(baseURL + 'users/signup', user);
   }
 
-  getUsers() : Observable<NewUser[]> {
-    return this.http.get<any>(baseURL + 'user')
-    .pipe(catchError(err => this.catchAuthError(err)))
+  userLogin(user:any): Observable<any> {
+    return this.http.post(baseURL + 'users/login', user);
   }
 
-  //http error handler
-  catchAuthError(error: any): Observable<any> {
-    if (error && error.error && error.error.message) {
-      //client-side error
-      return error.error.message;
-    } else if (error && error.message){
-    //server-side error
-      return error.message;
-    } else {
-      console.log(JSON.stringify(error));
-    }
-    return throwError(error);
+  getUsers() : Observable<NewUser[] | any> {
+    return this.http.get<any>(baseURL + 'users');
   }
+
+  updateUser(userDetail:any): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'content-type': 'application/json'
+      })
+    };
+    return this.http.put<any>(baseURL + 'users/user', userDetail, httpOptions);
+  }
+
+  
 
   
 }
