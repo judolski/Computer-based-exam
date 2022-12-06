@@ -100,9 +100,11 @@ export class LoginComponent implements OnInit {
         this.hideSpinner()
         if (err.error.password_message) {
           this.passwordMess = <any>err.error.password_message;
+          this.showLoginBtn = "block";
         }
-        if (err.error.email_message) {
+        else if (err.error.email_message) {
           this.emailMess = <any>err.error.email_message;
+          this.showLoginBtn = "block";
         }
         else {
           this.showLoginBtn = "block";
