@@ -20,7 +20,11 @@ export class UserService {
   }
 
   getUsers() : Observable<NewUser[] | any> {
-    return this.http.get<any>(baseURL + 'users');
+    return this.http.get(baseURL + 'users');
+  }
+
+  getUser(user:any) : Observable<NewUser[] | any> {
+    return this.http.post(baseURL + 'users/user', user);
   }
 
   updateUser(userDetail:any): Observable<any> {
@@ -30,6 +34,15 @@ export class UserService {
       })
     };
     return this.http.put<any>(baseURL + 'users/user', userDetail, httpOptions);
+  }
+
+  deleteUser(userId:any): Observable<any> {
+    return this.http.delete(baseURL + 'users/user/'+userId);
+  }
+
+
+  removeScore(userId:any): Observable<any> {  
+    return this.http.put<any>(baseURL + 'users/user/'+userId, userId);
   }
 
   

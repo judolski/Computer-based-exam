@@ -65,12 +65,6 @@ userRouter.route('/signup')
 
 userRouter.route('/')
 .get((req, res) => { 
-    if (!req.session.user) {
-        res.statusCode = 401;
-        res.setHeader('Content-Type', 'application/json');
-        res.json({message: 'You are not logged in'});
-        return;
-    }
     User.find({}).then((users) => {
         res.statusCode = 200;
         res.setHeader('Content-Type','application/json');
@@ -95,22 +89,32 @@ userRouter.route('/')
         res.json({err: err});
         return;   
     });
-})
+});
 
 userRouter.route('/user')
-.get((req, res, next) => {
-    if (!req.session.user) {
+.post((req, res) => {
+    if (!req.body.session) {
         res.statusCode = 401;
         res.setHeader('Content-Type', 'application/json');
         res.json({message: 'You are not logged in'});
         return;
     }
-    if (req.session.user) {
-        User.findOne({email: req.session.user})
+    if (req.body.session) {
+        User.findOne({email: JSON.parse(req.body.session)})
         .then((user) => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type','application/json');
-            res.json(user); 
+            if (user) {
+                res.statusCode = 200;
+                res.setHeader('Content-Type','application/json');
+                res.json(user);
+            }
+            else {
+                console.log('You are not logged in')
+                res.statusCode = 401;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({message: 'User not found.'});
+                return;
+            }
+             
         })
         .catch((err) => {
             res.statusCode = 404;
@@ -142,6 +146,46 @@ userRouter.route('/user')
     }
 });
 
+userRouter.route('/user/:id')
+.delete((req, res) => {
+    console.log(req.params.id);
+    User.deleteOne({_id: req.params.id}).then((result) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type','application/json');
+        res.json(result); 
+        console.log(result);
+    })
+    .catch((err) => {
+        res.statusCode = 404;
+        res.setHeader('Content-Type','application/json');
+        res.json({err: err});
+        return;   
+    });
+})
+.put((req, res) => {
+        console.log(req.params.id)
+        User.updateOne({_id: req.params.id},
+        {$set: {score: ""}})
+        .then((result) => {
+            if (result && result.matchedCount > 0) {
+                res.statusCode = 200;
+                res.setHeader('Content-Type','application/json');
+                res.json({message: 'Score submitted'}); 
+                console.log('Score saved')
+                return;
+            }
+        })
+        .catch((err) => {
+            res.statusCode = 500;
+            res.setHeader('Content-Type','application/json');
+            res.json({message: 'Unable to complete, please contact the administrator'});
+            return;
+        });
+});
+
+
+
+
 userRouter.route('/login')
 .post((req, res, next) => {
     User.findOne({email:req.body.email})
@@ -164,7 +208,7 @@ userRouter.route('/login')
                         req.session.save((err) => {
                             if (err) { return next(err) }
 
-                            console.log(req.session.user)
+                            console.log("you are logged in as " +req.session.user.email)
                             res.statusCode = 200;
                             res.setHeader('Content-Type','application/json');
                             res.json({message: 'You are Logged in Successfully!', redirect: 'http://localhost:4200/questions', userSession: req.session.user});

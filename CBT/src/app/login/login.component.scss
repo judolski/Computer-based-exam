@@ -59,13 +59,14 @@ height: 45px;
 	
 }
 
-#spinner {
-	position: absolute;
-	top:50%;
-	left: 40%;
-	bottom: 0;
-	z-index: 10040;
+mat-spinner {
+	margin: 0 auto;
 }
+
+#serverErr {
+	font-size: 16px;
+}
+
 .option_button {
 	width: 40%;
 	font-size: 35px;

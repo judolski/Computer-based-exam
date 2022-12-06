@@ -41,7 +41,7 @@ export class SignupComponent implements OnInit {
       gender: new FormControl("", [Validators.required]),
       phone: new FormControl("", [Validators.required, Validators.pattern("[0-9]*"), Validators.minLength(10), Validators.maxLength(10)]),
       email: new FormControl("", [Validators.required, Validators.email]),
-      password: new FormControl("", [Validators.required, Validators.minLength(6)])
+      password: new FormControl("", [Validators.required, Validators.minLength(5)])
     })
   }
     get f() {
@@ -88,6 +88,7 @@ export class SignupComponent implements OnInit {
   closeSuccessPopup() {
     this.succMsg = "none";
     this.overlay = "none";
+    this.signupForm.reset();
   }
 
   showSpinner() {

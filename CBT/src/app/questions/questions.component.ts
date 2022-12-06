@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Question } from '../model/setquestion';
 import { QuestionService } from '../services/question.service';
@@ -46,7 +46,7 @@ export class QuestionsComponent implements OnInit {
     this.questionService.getquestions(this.userSession).subscribe((questions) => {
       if (questions) {
         this.questions = questions;
-        this.examDuration(1/2)
+        this.examDuration(2)
       }
     }, err => {
       this.errMess = <any> err.error.message; 
@@ -137,10 +137,7 @@ export class QuestionsComponent implements OnInit {
   }
 
 
-  clearCountdown() {
-    clearInterval(this.myFunc)
-  }
-  
+ 
   calculate() {
     this.rightAnswer = 0;
     this.totalAnswered = 0;

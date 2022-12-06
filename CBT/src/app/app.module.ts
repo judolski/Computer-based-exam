@@ -32,6 +32,7 @@ import { SetquestionComponent } from './setquestion/setquestion.component';
 import { UserService } from './services/user.service';
 import { QuestionService } from './services/question.service';
 import { baseURL } from './share/baseurl';
+import { AdminSectionComponent } from './admin-section/admin-section.component';
 
 @core.NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { baseURL } from './share/baseurl';
     SignupComponent,
     LoginComponent,
     QuestionsComponent,
-    SetquestionComponent
+    SetquestionComponent,
+    AdminSectionComponent
 
   ],
 

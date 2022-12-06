@@ -15,9 +15,20 @@
                     </mat-form-field>
                     <mat-error *ngIf="formErrors.password"><i class="fa fa-exclamation-triangle"></i>{{formErrors.password}}</mat-error>
                     <mat-error *ngIf="passwordMess"><i class="fa fa-exclamation-triangle"></i>{{passwordMess}}</mat-error>
-                    <button mat-button (click)="login()" class="btn btn-danger login-btn"><b>Login</b></button><br>
+                    <div>
+                        <button mat-button (click)="login()" class="btn btn-danger login-btn">
+                            <b [ngStyle]="{'display':showLoginBtn}">Login</b>
+                            <!--progress spinner -->
+                            <mat-spinner [ngStyle]="{'display':spinning}" [diameter]="30" strokeWidth="10"></mat-spinner>
+                        </button>
+                        
+                    </div>
                     <div  style="text-align: right;"><a >Forgot Password?</a></div><br><br>
-                    <div style="color:whitesmoke;"><i>New to the System? &nbsp;</i> <button class="btn btn-success"  [routerLink]="['/signup']">Register Here</button></div>            
+                    <mat-error id="serverErr" *ngIf="serverErr"><i class="fa fa-exclamation-triangle"></i>Internal server error occur, try again later.<br><br> </mat-error>
+                    <div style="color:whitesmoke;">
+                        <i>New to the System? &nbsp;</i>
+                        <button class="btn btn-success"  [routerLink]="['/signup']">Register Here</button>
+                    </div>            
                 </form>
         </div>
 
@@ -37,7 +48,9 @@
         <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
             <div class="modal-content">
                 <div class="modal-body">
-                    <button class="btn btn-danger option_button" (click)="startTest()">START TEST</button>
+                    <button *ngIf="startquiz" class="btn btn-danger option_button" (click)="startTest()">START TEST</button>
+                    <h4 *ngIf="displayScore">You have taken your test! <br> Your Score: {{score}}</h4><br>
+                    <button *ngIf="displayScore" class="btn btn-danger" (click)="closeMenuModal()">Close</button>
                 </div>
             </div>
         </div>
