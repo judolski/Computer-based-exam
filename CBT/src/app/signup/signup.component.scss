@@ -1,8 +1,10 @@
-$formwidth : 80%;
+$formwidth : 100%;
+$half-width: 50%;
 
-.half-width {
+.full-width {
 	width: $formwidth
 }
+
 .form-header {
 	background-color: blue;
 	width: $formwidth;
@@ -13,41 +15,17 @@ $formwidth : 80%;
 	h3{
 		padding-top: 15px;
 		color: whitesmoke;
-		margin-top: 50px;
+		margin-top: 10px;
 	}
 }
 form {
-	margin: 50px;
+	margin: 30px;
+	
 }
+
 mat-error {
 	margin-top: -23px; 
 	margin-bottom: 20px;
-}
-
-.msg {
-	background-color:maroon; 
-	border-radius:3px; 
-	height: 50px;
-}
-
-.modal {
-	position: absolute;
-	max-width: 600px;
-	top:50%;
-	right: 100px;
-	bottom: 0;
-	left: 0;
-	z-index: 10040;
-}
-
-#overlay {
-	position: fixed; 
-	width: 100vw; 
-	height:100vw; 
-	left: 0; 
-	top: 0; 
-	background-color: #000; 
-	opacity: 0.0;
 }
 
 #spinner {
@@ -56,4 +34,8 @@ mat-error {
 	left: 40%;
 	bottom: 0;
 	z-index: 10040;
+}
+
+.msg-font {
+	font-size: 18px;
 }

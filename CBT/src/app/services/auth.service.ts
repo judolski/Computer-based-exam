@@ -12,8 +12,8 @@ export class AuthService {
   constructor() { }
 
 
-  logout() {
-    sessionStorage.removeItem('user')
+  logout(userId:any) {
+    sessionStorage.removeItem(userId)
   }
 
   //http error handler
@@ -24,9 +24,8 @@ export class AuthService {
     } 
     else if (error && error.message){
     //server-side error
+    error.message = 'Internal server error, please retry later';
     return error.message;
-    } else {
-      alert('Internal server error, please retry later');
     }
     return throwError(error);
   }

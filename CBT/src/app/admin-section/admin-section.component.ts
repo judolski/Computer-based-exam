@@ -8,6 +8,7 @@ import { UserService } from '../services/user.service';
 })
 export class AdminSectionComponent implements OnInit {
   users:any;
+  number = Math.floor(Math.random() * 3) + 1;
 
   constructor(private userService:UserService) { }
 

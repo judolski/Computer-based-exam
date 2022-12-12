@@ -1,6 +1,5 @@
 input[type=text]{
-    width: 100% ! important;
-    
+    width: 100% ! important;  
 }
 
 mat-form-field {
@@ -17,9 +16,12 @@ a {
 }
 
 mat-error {
-    font-size: 14px;
-    margin-top: -16px;
+    font-size: 16px;
+    margin-top: -18px;
     color: red;
+    padding-bottom: 7px;
+    padding-top: 7px;
+    //width:fit-content;
 }
 
 .login-btn {
@@ -63,13 +65,18 @@ mat-spinner {
 	margin: 0 auto;
 }
 
-#serverErr {
-	font-size: 16px;
+.option_button {
+	font-size: 45px;
 }
 
-.option_button {
-	width: 40%;
-	font-size: 35px;
-	height: 70px;
-	}
+.user-icon-section {
+    text-align: center;
+    font-style: italic;
+
+    #user-icon {
+        font-size: 150px;
+        text-align: center;
+    }
+}
+
 

@@ -13,7 +13,7 @@ userRouter.route('/signup')
         if (user) {
             res.statusCode = 409;
             res.setHeader('Content-Type', 'application/json');
-            res.json({message:'User with the phone: ' +user.phone+ ' already exist'});
+            res.json({message:'User with the phone "'+user.phone+'" already exist'});
             return;
         }
         User.findOne({email: req.body.email})
@@ -21,7 +21,7 @@ userRouter.route('/signup')
             if (user) {
                 res.statusCode = 409;
                 res.setHeader('Content-Type', 'application/json');
-                res.json({message: 'User with the email: ' +user.email+ ' already exist'});
+                res.json({message: 'User with the email "'+user.email+'" already exist'});
                 return;
             }
             else {
@@ -163,7 +163,6 @@ userRouter.route('/user/:id')
     });
 })
 .put((req, res) => {
-        console.log(req.params.id)
         User.updateOne({_id: req.params.id},
         {$set: {score: ""}})
         .then((result) => {
@@ -182,8 +181,6 @@ userRouter.route('/user/:id')
             return;
         });
 });
-
-
 
 
 userRouter.route('/login')

@@ -1,7 +1,8 @@
  <div class="container-fluid">
     <table class="table table-bordered border-primary align-middle mb-0 bg-white">
-        <thead>
-            <tr>
+        <thead class="sticky-top">
+            <tr class="bg-primary">
+                <th>S/N</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
@@ -11,7 +12,8 @@
             </tr>
         </thead>
         <tbody *ngIf="users">
-            <tr *ngFor="let user of users">
+            <tr *ngFor="let user of users; let i = index;">
+                <td>{{i+1}}</td>
                 <td>{{user.lastname}} {{user.firstname}} {{user.middlename}}</td>
                 <td>{{user.email}}</td>
                 <td>{{user.phone}}</td>

@@ -11,7 +11,6 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./questions.component.scss']
 })
 export class QuestionsComponent implements OnInit {
-  question: Question|any;
   questions: Question[]|any
   errMess: any;
   ansArr: any;
@@ -25,9 +24,11 @@ export class QuestionsComponent implements OnInit {
   scoreSavedStutus: any;
 
   display = "none";
+  displaySubmit = "none";
   spinning = "none";
   overlayValue = "none";
-  savedScoreColour = "black"
+  overlayColor = "none";
+  savedScoreColour = "black";
   timerColor = "green";
 
   constructor(
@@ -42,21 +43,17 @@ export class QuestionsComponent implements OnInit {
   
   ngOnInit(): void { 
     this.userSession = {session: sessionStorage.getItem('user')};
-    
     this.questionService.getquestions(this.userSession).subscribe((questions) => {
       if (questions) {
         this.questions = questions;
-        this.examDuration(2)
+        this.examDuration(10)
       }
     }, err => {
-      this.errMess = <any> err.error.message; 
-      //alert(err.message);
+      this.errMess = <any> err.error.message;
       this.router.navigate(['/login']);
     });
-  
   }
 
-  
   resetQuiz() {
     for (let i = 0; i < this.questions.length; i++) {
       if ("selected" in this.questions[i]) {
@@ -74,9 +71,8 @@ export class QuestionsComponent implements OnInit {
   examDuration(duration:any) {
     let countdownDate = new Date().getTime() + duration * 60 * 1000;
     let currentDate = new Date().getTime();
-    let previousSavedTime = Number(localStorage.getItem(JSON.stringify(sessionStorage.getItem('user'))));
+    let previousSavedTime = Number(localStorage.getItem(this.userSession.session));
     let prevTime = previousSavedTime + currentDate;
-
     //check if there already a saved countdown process for the user
     if (previousSavedTime){
       let myFunc = setInterval(() => {
@@ -89,7 +85,7 @@ export class QuestionsComponent implements OnInit {
         this.secs = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
         if (this.hrs != 0 || this.mins != 0 || this.secs != 0) {
-          localStorage.setItem(JSON.stringify(sessionStorage.getItem('user')), JSON.stringify(timeLeft));
+          localStorage.setItem(this.userSession.session, JSON.stringify(timeLeft));
         }
   
         if (this.mins <= 10) {
@@ -98,7 +94,7 @@ export class QuestionsComponent implements OnInit {
 
         if (this.hrs == 0 && this.mins == 0 && this.secs == 0) {
           //clear countdowndown
-          localStorage.removeItem(JSON.stringify(sessionStorage.getItem('user')));
+          localStorage.removeItem(this.userSession.session);
           clearInterval(myFunc);
           this.calculate();
         }
@@ -117,7 +113,7 @@ export class QuestionsComponent implements OnInit {
         this.secs = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
         if (this.hrs != 0 || this.mins != 0 || this.secs != 0) {
-          localStorage.setItem(JSON.stringify(sessionStorage.getItem('user')), JSON.stringify(timeLeft));
+          localStorage.setItem(this.userSession.session, JSON.stringify(timeLeft));
         }
 
         if (this.mins <= 10) {
@@ -126,7 +122,7 @@ export class QuestionsComponent implements OnInit {
 
         if (this.hrs == 0 && this.mins == 0 && this.secs == 0) {
           //clear countdowndown
-          localStorage.removeItem(JSON.stringify(sessionStorage.getItem('user')));
+          localStorage.removeItem(this.userSession.session);
           clearInterval(myFunc);
           this.calculate();
         }
@@ -136,9 +132,9 @@ export class QuestionsComponent implements OnInit {
     }
   }
 
-
- 
+  
   calculate() {
+    this.closeSubmitModal();
     this.rightAnswer = 0;
     this.totalAnswered = 0;
     this.ansArr = [];
@@ -167,7 +163,7 @@ export class QuestionsComponent implements OnInit {
         this.scoreSavedStutus = <any> err.error.message; 
       });
       this.scoreModal();
-      this.authservice.logout();
+      this.authservice.logout('user');
     }
   }
 
@@ -196,6 +192,23 @@ export class QuestionsComponent implements OnInit {
     this.display = "none";
     this.overlayValue = "none";
     this.router.navigate(['/login']);
+  }
+
+  submitConfirmationModal() {
+    this.displaySubmit = "block"
+    this.overlayValue = "block"
+  }
+
+  closeSubmitModal() {
+    this.displaySubmit = "none"
+    this.overlayValue = "none"
+  }
+
+  showSpinner() {
+    this.spinning = "block";
+  }
+  hideSpinner() {
+    this.spinning = "none";
   }
 
 }

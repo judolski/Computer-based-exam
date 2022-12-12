@@ -6,7 +6,7 @@
         <mat-card style="margin-bottom: 10px;">
             <div class="" fxLayoutGap="10px" fxLayout="row">
                 <h4 class="don">
-                    <span><b>{{currentQuestion.num}}.</b></span>
+                    <span><b>{{questionIndex+1}}.</b></span>
                 </h4>
                 <h4>
                     <span><b>{{currentQuestion.question}}</b></span>
@@ -103,14 +103,18 @@
             </button>
 
             <div class="flex-spacer"></div>
-            <button type="submit" (click)="calculate()" mat-button class="btn btn-primary">Submit</button>
+            <button type="submit" (click)="submitConfirmationModal()" mat-button class="btn btn-primary">Submit</button>
         </div>
         
     </div>
 </div>
 
+<!-- Progress spinner -->
+<mat-spinner [ngStyle]="{'display':spinning}" [diameter]="30" strokeWidth="10"></mat-spinner>
+
+
 <!--Score Modal -->
-<div id="overlay" [ngStyle]="{'display':overlayValue}"></div>
+<div id="overlay" style="display: none" [ngStyle]="{'display':overlayValue}"></div>
     <div class="container">
         <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
             <div class="modal-content">
@@ -125,5 +129,19 @@
         </div>
     </div>
 
+    <!--submit Modal -->
+    <div class="submit-modal container"  tabindex="-1" role="dialog" display="nine" style="display: none" [ngStyle]="{'display':displaySubmit}">
+        <div class="submit-modal-content">
+            <div style="background-color: lightyellow;">
+                <i class="fa fa-warning text-warning" style="font-size: 48px; margin-top: 10px;"></i>
+                <hr>
+            </div>
+            <div class="modal-body">
+                <h4>Are you sure you want to submit?</h4>
+                <button id="btn" class="btn btn-danger" (click)="closeSubmitModal()">No</button>
+                <button id="btn" class="btn btn-primary" (click)=" calculate()">Yes</button>
+            </div>
+        </div>
+    </div>
 
 
