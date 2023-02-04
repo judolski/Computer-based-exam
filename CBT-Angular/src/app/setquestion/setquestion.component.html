@@ -1,0 +1,128 @@
+<div>
+    <nav>
+        <div fxLayout="row">
+            <h5>CBT | Solution</h5>
+            <div class="flex-spacer"></div>
+            <div class="user-session" *ngIf="checkUser">
+                <span class=""><i class="fa fa-user-circle"></i>&nbsp;{{checkUser | titlecase}}</span>
+            </div>
+        </div>
+    </nav>
+</div>
+<div fxLayout="row">
+    <div class="widget-header">
+        <button mat-button [routerLink]="['/admin-section']">Back to Home</button>
+    </div>
+    <div class="flex-spacer"></div>
+    <div>
+        <button mat-button class="logout" *ngIf="checkUser" (click)="logout()">Logout</button>
+    </div>
+</div>
+
+<div class="container full-content">
+    <div fxFlex.gt-sm="80" class="form-content" fxFlex="100">
+        <form [formGroup]="questionForm" #qForm="ngForm" (ngSubmit)="addQuestion()" style="margin-top: 5%;"  novalidate>
+            <div  class="form-header">
+                <h3>QUESTION SECTION</h3>
+            </div>
+            <div layout="row">
+                <mat-form-field style="width: 20%;">
+                    <input type="text" class="" id="num" formControlName="num" placeholder="S/N" matInput>
+                </mat-form-field>
+                <mat-error *ngIf="questionForm.controls.num.hasError('whitespace')">can contain only numbers</mat-error>
+                <mat-form-field style="width: 80%;">
+                    <input type="text" class="" id="question" formControlName="question" placeholder="QUESTION" matInput>
+                </mat-form-field>
+            </div>
+            <p>
+                
+                <mat-form-field class="full-width">
+                    <span matPrefix>A &nbsp;</span>
+                    <input type="text" class="" id="option1" formControlName="option1" placeholder="OPTION1" matInput minlength="2">
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field class="full-width">
+                    <span matPrefix>B &nbsp;</span>
+                    <input type="text" class="" id="option2" formControlName="option2" placeholder="OPTION2" matInput>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field class="full-width">
+                    <span matPrefix>C &nbsp;</span>
+                    <input type="text" class="" id="option3" formControlName="option3" placeholder="OPTION3" matInput>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field class="full-width">
+                    <span matPrefix>D &nbsp;</span>
+                    <input type="text" class="" id="option4" formControlName="option4" placeholder="OPTION4" matInput>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field class="full-width">
+                    <input type="text" class="" id="corr_ans" formControlName="corr_ans" placeholder="CORRECT ANSWER" matInput>
+                </mat-form-field>
+            </p>
+            <div fxLayout="row">
+                <mat-form-field class="min-width">
+                    <input type="text" class="" id="ans1" formControlName="ans1" placeholder="ANSWER1" matInput>
+                </mat-form-field>
+                <mat-form-field class="min-width">
+                    <input type="text" class="" id="ans2" formControlName="ans2" placeholder="ANSWER2" matInput>
+                </mat-form-field>
+                <mat-form-field class="min-width">
+                    <input type="text" class="" id="ans3" formControlName="ans3" placeholder="ANSWER3" matInput>
+                </mat-form-field>
+                <mat-form-field class="min-width">
+                    <input type="text" class="" id="ans4" formControlName="ans4" placeholder="ANSWER4" matInput>
+                </mat-form-field>
+            </div>
+            <mat-error *ngIf="requiredField" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i>{{requiredField}}</mat-error>
+            <p>
+                <button mat-button type="submit" class="btn btn-primary submit-button">SUBMIT</button>
+            </p>
+        </form>
+    </div>
+</div>
+
+<div class="container" id="spinner" [ngStyle]="{'display':spinning}" >
+    <mat-spinner></mat-spinner>
+    <h4>Saving...Please wait</h4>
+</div>
+
+
+<div id="overlay" [ngStyle]="{'display':overlay}"></div>
+
+<div *ngIf="errorMsg" class="modal container"  tabindex="-1" role="dialog" [ngStyle]="{'display':errMsgDialog}">
+    <div class="modal-content">
+        <div class="modal-body">
+            <h5 class="modal-title" style="color: maroon">Error</h5><br>
+            <mat-error class="fa fa-exclamation-triangle" style="text-align:center; font-size: 18px;" >{{ errorMsg }}</mat-error>
+            <button  class="btn btn-warning" (click)="closeErrorPopup()" style="float: right;">Ok</button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="successMsg" style="max-width: 600px;" class="modal container" tabindex="-1" role="dialog" [ngStyle]="{'display':succMsgDialog}">
+    <div class="modal-content">
+        <div class="modal-body">
+            <h5 class="modal-title" style="color:seagreen">Success</h5><br>
+            <div class="fa fa-check-circle" style="text-align: center; font-size: 18px; color: seagreen;">{{ successMsg }}</div>
+            <button class="btn btn-success" (click)="closeSuccessPopup()" style="float: right;">Ok</button>
+        </div>
+    </div>
+</div>
+
+<!-- show user timed out -->
+<div class="container">
+    <div class="sessionTimedout_modal" [ngStyle]="{'display': showActionErr}" role="dialog">
+        <div class="modal-body">
+            <div style="text-align: center;" class="alert alert-danger" *ngIf="sessionTimeOutErr">
+                <mat-error ><i class="fa fa-exclamation-circle"></i>&nbsp;{{sessionTimeOutErr}}</mat-error>
+                <button class="timeOutBtn" (click)="sessionTimedOut()">Ok</button>
+            </div>
+
+        </div>
+    </div>
+</div>

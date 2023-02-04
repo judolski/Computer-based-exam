@@ -2,13 +2,15 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Question = require('../models/question');
 const User = require('../models/user');
+const cors = require('./cors');
 
 questionRouter = express.Router();
 questionRouter.use(bodyParser.json());
 
 
 questionRouter.route('/')
-.post((req, res) => {
+.options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
+.post(cors.corsWithOptions, (req, res) => {
     if (req.body.session) {
         User.findOne({email: JSON.parse(req.body.session)})
         .then((user) => {
@@ -50,7 +52,8 @@ questionRouter.route('/')
 
 
 questionRouter.route('/setquestion')
-.post((req, res) => {
+.options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
+.post(cors.corsWithOptions, (req, res) => {
     Question.findOne({num: req.body.num})
     .then((data) => {
         if (data) {
@@ -88,10 +91,9 @@ questionRouter.route('/setquestion')
     
 });
 
-
-
 questionRouter.route('/deleteall')
-.delete((req, res) => {
+.options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
+.delete(cors.corsWithOptions, (req, res) => {
     Question.deleteMany({}).then((data) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');

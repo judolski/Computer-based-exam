@@ -1,0 +1,145 @@
+$formwidth : 100%;
+
+.full-width {
+	width: $formwidth
+}
+
+.min-width {
+	width: 25%
+}
+
+.form-header {
+	background-color: blue;
+	width: $formwidth;
+	text-align: center;
+	height: 70px;
+	margin-bottom: 10px;
+}
+
+.timeOutBtn {
+    width: 27px !important;
+    height: 24px !important;
+    padding: 0px !important;
+    border: none;
+    border-radius: 3px;
+    background: none;
+    padding-bottom: 0px;
+    box-shadow: 1px 1px 4px 4px #f7f1f1;
+}
+
+.full-content {
+	margin-bottom: 50px;
+}
+
+nav {
+    background-color: rgb(112, 112, 175);
+    margin: 0px;
+    min-height: 40px;
+}
+
+nav .fa {
+    color: #f0eded;
+}
+
+nav .user-session {
+    font-weight: bold;
+    margin: 5px;
+}
+
+nav h5 {
+    font-weight: bold;
+    margin: 5px;
+}
+
+.logout {
+    float: right;
+    font-weight: bold;
+    box-shadow: 3px 3px 3px 3px #f0eded;
+}
+
+.widget {
+   text-align: center;
+}
+
+.widget-header {
+    background-color: #faf7f7;
+    //padding: 5px;
+    left: calc(50% - 100%);
+    width: 100%;
+	height: 40px;
+    
+}
+
+.widget-header button {
+	font-weight: bold;
+    box-shadow: 3px 3px 3px 3px #f0eded;
+}
+
+.flex-spacer {
+    flex: 1 1 auto;
+}
+
+.form-header h3{
+	padding-top: 15px;
+	color: whitesmoke;
+}
+
+form {
+	margin: 20px;
+}
+
+.form-content {
+	box-shadow: 5px 5px 5px 5px #f0eded;
+	margin: 20px;
+
+}
+
+.submit-button {
+	float: right;
+	margin-bottom: 10px;
+}
+
+mat-error {
+font-size: 20px;}
+
+.msg {
+	background-color:maroon; 
+	border-radius:3px; 
+	height: 50px;
+}
+
+.modal {
+	position: absolute;
+	max-width: 600px;
+	top:50%;
+	right: 100px;
+	bottom: 0;
+	left: 0;
+	z-index: 10040;
+}
+
+.sessionTimedout_modal {
+	position: absolute;
+	width: 300px;
+	height: 70%;
+    top: 30%;
+    left: calc(50% - 150px);
+}
+
+#overlay {
+	position: fixed; 
+	width: 100vw; 
+	height:100vw; 
+	left: 0; 
+	top: 0; 
+	background-color: #000; 
+	opacity: 0.0;
+}
+
+#spinner {
+	position: absolute;
+	top:50%;
+	left: 40%;
+	bottom: 0;
+	z-index: 10040;
+}

@@ -1,0 +1,11 @@
+<div>
+    <nav>
+        <div fxLayout="row">
+            <h5>CBT | Solution</h5>
+            <div class="flex-spacer"></div>
+            <div class="user-session" *ngIf="userLogin">
+                <span class=""><i class="fa fa-user-circle"></i>&nbsp;{{userLogin | titlecase}}</span>
+            </div>
+        </div>
+    </nav>
+</div>

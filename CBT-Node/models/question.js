@@ -37,6 +37,9 @@ const questionSchema = new Schema({
     ans4: {
         type: String
     }
+},  
+{
+    timestamps: true
 });
 
 

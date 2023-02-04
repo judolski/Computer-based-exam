@@ -1,0 +1,125 @@
+<div class="container form-content" fxLayout="column">
+    <form [formGroup]="userForm" (ngSubmit)="modifyUser()" novalidate>
+        <div fxLayout="row" class="form-header">
+            <h3>UPDATE USER DETAILS</h3>
+            <div class="flex-spacer"></div>
+            <a mat-button mat-dialog-close>&times;</a>
+        </div>
+        <div fxLayout="row" fxLayout.lt-md="column">
+            <div fxFlex="33" fxLayout="column">
+                <mat-form-field fxFlex.lt-md="100">
+                    <mat-label>First Name</mat-label>
+                    <input type="text" class="" id="firstname" formControlName="firstname" matInput>
+                </mat-form-field>
+                <mat-error *ngIf="(f['firstname'].touched || f['firstname'].dirty) && f['firstname'].invalid">
+                    <small *ngIf="f['firstname'].errors?.['minlength'] && !f['firstname'].errors?.['pattern']">
+                        First name should be at least 2 character long.
+                    </small>
+                    <small *ngIf=" f['firstname'].errors?.['required']">
+                        First name is required.
+                    </small>
+                    <small *ngIf=" f['firstname'].errors?.['pattern']">
+                        First name must contain only alphabets.
+                    </small>
+                </mat-error>
+            </div>
+            <div fxFlex="33" fxLayout="column">
+                <mat-form-field fxFlex.lt-md="100">
+                    <mat-label>Last Name</mat-label>
+                    <input type="text" class="" id="lastname" formControlName="lastname"  matInput minlength="2">
+                </mat-form-field>
+                <mat-error *ngIf="(f['lastname'].touched || f['lastname'].dirty) && f['lastname'].invalid">
+                    <small *ngIf="f['lastname'].errors?.['minlength'] && !f['lastname'].errors?.['pattern']">
+                        Last name should be at least 2 character long.
+                    </small>
+                    <small *ngIf=" f['lastname'].errors?.['required']">
+                        Last name is required.
+                    </small>
+                    <small *ngIf=" f['lastname'].errors?.['pattern']">
+                        Last name must contain only alphabets.
+                    </small>
+                </mat-error>
+            </div>
+            <div fxFlex="33" fxLayout="column">
+                <mat-form-field  fxFlex.lt-md="100">
+                    <mat-label>Middle Name</mat-label>
+                    <input type="text" class="" id="middlename" formControlName="middlename" matInput>
+                </mat-form-field>
+                <mat-error *ngIf="f['middlename'].dirty">
+                    <small *ngIf="f['middlename'].errors?.['pattern']">
+                        Middle name must contain only alphabets.
+                    </small>
+                </mat-error>  
+            </div>
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column">
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Gender</mat-label>
+                    <select matNativeControl formControlName="gender">
+                        <option  *ngFor="let sex of genderType" [value]="sex">{{ sex }}</option>
+                    </select>
+                </mat-form-field>
+                <mat-error *ngIf="f['gender'].touched && f['gender'].invalid">
+                    <small *ngIf="f['gender'].errors?.['required']">
+                        Gender is required.
+                    </small>
+                </mat-error>
+            </div>  
+        </div>
+        
+        <div fxLayout="row" fxLayout.lt-sm="column">
+            <div fxFlex="50" fxLayout="column" >
+                <mat-form-field class="">
+                    <mat-label>Phone Number</mat-label>
+                    <span matPrefix>+234 &nbsp;</span>
+                    <input type="tel" formControlName="phone" placeholder="eg. 7045293426" matInput [readonly]="true">
+                </mat-form-field>
+                <mat-error *ngIf="(f['phone'].touched || f['phone'].dirty) && f['phone'].invalid">
+                    <small *ngIf="f['phone']?.errors['required']">
+                        Phone number is required.
+                    </small>
+                    <small *ngIf="f['phone']?.errors['pattern']">
+                        Enter valid Phone number  format.
+                    </small>
+                    <small *ngIf="f['phone']?.errors['minlength'] && !f['phone']?.errors['pattern']">
+                        Enter your 10 digit phone number.
+                </small>
+                <small *ngIf="f['phone']?.errors['maxlength'] && !f['phone']?.errors['pattern']">
+                        Phone number must be 10 digits.
+                    </small>
+                </mat-error>
+            </div>
+            <div fxFlex="50" fxLayout="column">
+                <mat-form-field class="">
+                    <mat-label>Email</mat-label>
+                    <input type="email" formControlName="email" matInput [readonly]="true">
+                </mat-form-field>
+                <mat-error *ngIf="f['email'].touched && f['email'].invalid">
+                    <small *ngIf="f['email'].errors['required']">
+                        Email is required.
+                    </small>
+                    <small *ngIf="f['email'].errors['email']">
+                        Please enter valid email.
+                    </small>
+                </mat-error>
+            </div>
+        </div>
+        
+        <div>
+            <div fxFlex="100" *ngIf="errorMsg" class="fa fa-exclamation-triangle alert alert-danger msg-font"><b>Error</b>: {{ errorMsg }}</div>
+            <div fxFlex="100" *ngIf="successMsg" class="fa fa-check-circle alert alert-success msg-font"><b>Success</b>: {{ successMsg }}</div>
+        </div>
+
+        <div fxHide.lt-sm fxLayoutAlign="end">
+            <button mat-button type="submit" class="btn btn-primary">UPDATE</button> 
+        </div>
+        <div fxHide.sm fxHide.gt-sm>
+            <button mat-button fxFlex="100" type="submit" class="btn btn-primary">UPDATE</button> 
+        </div>
+    </form>
+    <div class="container" id="spinner" [ngStyle]="{'display':spinning}" >
+        <mat-spinner></mat-spinner>
+        <h4>Saving.....</h4>
+    </div>
+</div>

@@ -2,12 +2,18 @@ const User  = require('../models/user');
 const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+const jwt = require("jsonwebtoken");
+
+const cors = require('./cors');
+const mailerConfig = require('../mailer-config');
 
 userRouter = express.Router();
 userRouter.use(bodyParser.json());
 
 userRouter.route('/signup')
-.post((req,res) => {
+.options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
+.post(cors.corsWithOptions, (req,res) => {
     User.findOne({phone: req.body.phone})
     .then((user ) => {
         if (user) {
@@ -39,7 +45,7 @@ userRouter.route('/signup')
                         });
                         
                         user.save().then((data) => {
-                            console.log(hash);
+                            console.log(data);
                             res.statusCode = 200;
                             res.setHeader('Content-Type', 'application/json');
                             res.json({message:'Registration Successful'});
@@ -62,37 +68,9 @@ userRouter.route('/signup')
     })
 })
 
-
-userRouter.route('/')
-.get((req, res) => { 
-    User.find({}).then((users) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type','application/json');
-        res.json(users);
-    })
-    .catch((err) => {
-        res.statusCode = 404;
-        res.setHeader('Content-Type','application/json');
-        res.json({err: err});
-        return;
-    });
-})
-.delete((req, res) => {
-    User.deleteMany({}).then((users) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type','application/json');
-        res.json(users); 
-    })
-    .catch((err) => {
-        res.statusCode = 404;
-        res.setHeader('Content-Type','application/json');
-        res.json({err: err});
-        return;   
-    });
-});
-
 userRouter.route('/user')
-.post((req, res) => {
+.options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
+.post(cors.corsWithOptions, (req, res) => {
     if (!req.body.session) {
         res.statusCode = 401;
         res.setHeader('Content-Type', 'application/json');
@@ -124,16 +102,16 @@ userRouter.route('/user')
         })
     } 
 })
-.put((req, res) => {
+.put(cors.corsWithOptions, (req, res) => {
     if (req.body.session) {
+        fieldToUpdate = req.body.fieldToUpdate;
         User.updateOne({email: JSON.parse(req.body.session)},
-        {$set: {score: JSON.parse(req.body.score)}})
+        {$set: {[fieldToUpdate]: req.body.value}})
         .then((result) => {
-            if (result && result.matchedCount > 0) {
+            if (result && result.modifiedCount > 0) {
                 res.statusCode = 200;
                 res.setHeader('Content-Type','application/json');
-                res.json({message: 'Score submitted'}); 
-                console.log(req.body.score)
+                res.json();
                 return;
             }
         })
@@ -146,8 +124,80 @@ userRouter.route('/user')
     }
 });
 
+userRouter.route('/user/resetpassword')
+.options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
+.post(cors.corsWithOptions, (req, res) => {
+    let username = req.body.email;
+    User.findOne({email: username})
+    .then((user) => {
+        if(user) {
+            const jwtKey = "my_key";
+            const jwtKeyExp = 300;
+            const token = jwt.sign({username}, jwtKey, {
+            algorithm: "HS256",
+            expiresIn: jwtKeyExp
+            });
+            resetPass =  token.substr(-6);
+            bcrypt.hash(resetPass, 10)
+            .then((hash_pass) => {
+                if (hash_pass) {
+                    User.updateOne({email: username},
+                        {$set: {password: hash_pass}
+                    })
+                    .then((result) => {
+                        if(result) {
+                            console.log("password saved");
+                            let message = {
+                                from: mailerConfig.user,
+                                to: username,
+                                subject: 'Password Reset',
+                                html: `<p><b>Hello `+user.firstname.toUpperCase()+`,</b><br></p>
+                                <p>Your request for password reset has been processed.Please see your new Password below.</p>
+                                <p><b>New password: </b>`+resetPass+`</p><br><br>
+                                <b>Thank You,<br>JC-TECHNOLOGY</b>`
+                            };
+                            mailerConfig.transporter.sendMail(message, (error, info) => {
+                                if(error) {
+                                    res.statusCode = 503;
+                                    res.setHeader('Content-Type', 'application/json');
+                                    res.json({message: "Service unavailable"});
+                                    return;
+                                }
+                                else {
+                                    res.statusCode = 200;
+                                    res.setHeader('Content-Type','application/json');
+                                    res.json({message: "A new password has been sent to your mail"});
+                                    return;
+                                }
+                            });
+                        }
+                        else {
+                            res.statusCode = 412;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json({message: 'Unable to reset password.'});
+                            return;
+                        }
+                    }).catch((err) => {
+                        res.statusCode = 500;
+                        res.setHeader('Content-Type','application/json');
+                        res.json({message: err});
+                        return;
+                    });
+                }
+            });
+        }
+        else{
+            res.statusCode = 404;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({message: 'You have not registered.'});
+            return;
+        }
+    });
+});
+
 userRouter.route('/user/:id')
-.delete((req, res) => {
+.options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
+.delete(cors.corsWithOptions, (req, res) => {
     console.log(req.params.id);
     User.deleteOne({_id: req.params.id}).then((result) => {
         res.statusCode = 200;
@@ -162,35 +212,17 @@ userRouter.route('/user/:id')
         return;   
     });
 })
-.put((req, res) => {
-        User.updateOne({_id: req.params.id},
-        {$set: {score: ""}})
-        .then((result) => {
-            if (result && result.matchedCount > 0) {
-                res.statusCode = 200;
-                res.setHeader('Content-Type','application/json');
-                res.json({message: 'Score submitted'}); 
-                console.log('Score saved')
-                return;
-            }
-        })
-        .catch((err) => {
-            res.statusCode = 500;
-            res.setHeader('Content-Type','application/json');
-            res.json({message: 'Unable to complete, please contact the administrator'});
-            return;
-        });
-});
-
 
 userRouter.route('/login')
-.post((req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
+.post(cors.corsWithOptions, (req, res, next) => {
     User.findOne({email:req.body.email})
     .then((user) => {
         if (!user) {
             res.statusCode = 401;
             res.setHeader('Content-Type','application/json');
             res.json({email_message: 'Invalid user'});
+            console.log(user)
             return;
         } 
         if (user) {
@@ -231,7 +263,8 @@ userRouter.route('/login')
 });
 
 userRouter.route('/logout')
-.get((req, res) => {
+.options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
+.get(cors.cors, (req, res) => {
     console.log(req.session.user);
     req.session.destroy((err) => {
         if(err) { res.end(err) }

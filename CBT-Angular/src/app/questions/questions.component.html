@@ -1,0 +1,148 @@
+<app-header [userLogin]="checkUser"></app-header>
+<div class="container container-content">
+    <div *ngIf="questions">
+        <h5 *ngIf="hrs || mins || secs" id="timeLeft" [ngStyle]="{'color':timerColor}" style="float:right;">{{hrs}}h : {{mins}}m : {{secs}}s</h5>
+
+        <h5 style="margin-top: 40px;"> Question {{ questionIndex+1 }} of {{questions.length}}</h5>
+        <mat-card style="margin-bottom: 10px;">
+            <div class="" fxLayoutGap="10px" fxLayout="row">
+                <h4 class="don">
+                    <span><b>{{questionIndex+1}}.</b></span>
+                </h4>
+                <h4>
+                    <span><b>{{currentQuestion.question}}</b></span>
+                </h4>
+            </div>
+       
+            <hr style="opacity: 0.02;">
+            <mat-card-actions>
+                <div>
+                    <div fxFlex fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="40px" style="justify-content: center">
+                        <div fxLayout="column" fxLayoutGap="40px">
+                            <div class="" fxLayoutGap="10px" fxLayout="row">
+                                <div class="don">
+                                    <span>A.</span>
+                                </div>
+                                <div>
+                                    <span>{{currentQuestion.option1}}</span>
+                                </div>
+                            </div>
+                            <div class="" fxLayoutGap="10px" fxLayout="row"  fxHide.lt-md>
+                                <div class="don">
+                                    <span>C.</span>
+                                </div>
+                                <div>
+                                    <span>{{currentQuestion.option3}}</span>
+                                </div>
+                            </div>
+                            <div class="" fxLayoutGap="10px" fxLayout="row" fxHide.gt-sm>
+                                <div class="don">
+                                    <span>B.</span>
+                                </div>
+                                <div>
+                                    <span>{{currentQuestion.option2}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div fxLayout="column" fxLayoutGap="40px">
+                            <div class="" fxLayoutGap="10px" fxLayout="row" fxHide.lt-md>
+                                <div>
+                                    <span class="don">B.</span>
+                                </div>
+                                <div>
+                                    <span>{{currentQuestion.option2}}</span>
+                                </div>
+                            </div>
+                            <div class="" fxLayoutGap="10px" fxLayout="row" fxHide.gt-sm>
+                                <div class="don">
+                                    <span>C.</span>
+                                </div>
+                                <div>
+                                    <span>{{currentQuestion.option3}}</span>
+                                </div>
+                            </div>
+                            <div class="" fxLayoutGap="10px" fxLayout="row">
+                                <div class="don">
+                                    <span>D.</span>
+                                </div>
+                                <div>
+                                    <span>{{currentQuestion.option4}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr style="margin-top: 40px;">
+                
+                <div class="answers">
+                    <p>
+                        <input type="radio" name="{{currentQuestion.num}}option" value="{{currentQuestion.ans1}}" [(ngModel)]="currentQuestion.selected">
+                        <label for="{{currentQuestion.num}}optionA">{{currentQuestion.ans1}}</label>
+                    </p>
+                    <p>
+                        <input type="radio" name="{{currentQuestion.num}}option" value="{{currentQuestion.ans2}}" [(ngModel)]="currentQuestion.selected">
+                        <label for="{{currentQuestion.num}}optionB">{{currentQuestion.ans2}}</label>
+                    </p>
+                    <p>
+                        <input type="radio" name="{{currentQuestion.num}}option" value="{{currentQuestion.ans3}}" [(ngModel)]="currentQuestion.selected">
+                        <label for="{{currentQuestion.num}}optionC">{{currentQuestion.ans3}}</label>
+                    </p>
+                    <p>
+                        <input type="radio" name="{{currentQuestion.num}}option" value="{{currentQuestion.ans4}}" [(ngModel)]="currentQuestion.selected">
+                        <label for="{{currentQuestion.num}}D">{{currentQuestion.ans4}}</label>
+                    </p>
+                </div>
+            </mat-card-actions>
+     
+        </mat-card>
+        <div fxLayout="row" style="margin-bottom: 20px;">
+            <button mat-button (click)="goPrevious()" >
+                <span class="fa fa-chevron-left fa-lg"></span>Back
+            </button>
+            <button mat-button (click)="goNext()" >
+                Next<span class="fa fa-chevron-right fa-lg"></span>
+            </button>
+
+            <div class="flex-spacer"></div>
+            <button type="submit" (click)="submitConfirmationModal()" mat-button class="btn btn-primary">Submit</button>
+        </div>
+        
+    </div>
+</div>
+
+<!-- Progress spinner -->
+<mat-spinner [ngStyle]="{'display':spinning}" [diameter]="30" strokeWidth="10"></mat-spinner>
+
+
+<!--Score Modal -->
+<div id="overlay" style="display: none" [ngStyle]="{'display':overlayValue}"></div>
+    <div class="container">
+        <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4 class="modal-title" [ngStyle]="{'color':savedScoreColour}">{{scoreSavedStutus}}</h4>
+                    <h5 *ngIf="showScore">Total score: {{ rightAnswer }}</h5>
+                    <h5 *ngIf="showScore">Number of attempted question: {{ totalAnswered }}</h5>
+                    <br>
+                    <button class="btn btn-danger" (click)="closescoreModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--submit Modal -->
+    <div class="submit-modal container"  tabindex="-1" role="dialog" display="nine" style="display: none" [ngStyle]="{'display':displaySubmit}">
+        <div class="submit-modal-content">
+            <div style="background-color: lightyellow;">
+                <i class="fa fa-warning text-warning" style="font-size: 48px; margin-top: 10px;"></i>
+                <hr>
+            </div>
+            <div class="modal-body">
+                <h4>Are you sure you want to submit?</h4>
+                <button id="btn" class="btn btn-danger" (click)="closeSubmitModal()">No</button>
+                <button id="btn" class="btn btn-primary" (click)=" calculate()">Yes</button>
+            </div>
+        </div>
+    </div>
+
+

@@ -1,0 +1,24 @@
+.flex-spacer {
+    flex: 1 1 auto;
+}
+
+
+nav {
+    background-color: rgb(112, 112, 175);
+    margin: 0px;
+    min-height: 40px;
+}
+
+nav .fa {
+    color: #f0eded;
+}
+
+nav .user-session {
+    font-weight: bold;
+    margin: 5px;
+}
+
+nav h5 {
+    font-weight: bold;
+    margin: 5px;
+}

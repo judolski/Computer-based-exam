@@ -1,0 +1,68 @@
+<app-header [userLogin]="checkUser"></app-header>
+<div class="container-fluid">
+    <div class="content" fxFlex="100" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px">    
+        <div fxFlex="50" fxFlex.lt-md="100">
+            <form [formGroup]="loginForm" novalidate>
+                <div class="user-icon-section">
+                    <i id="user-icon" class="fa fa-user-circle"></i>
+                    <h2>Login</h2>
+                </div> 
+                <mat-form-field>
+                    <mat-label style="color:whitesmoke"><i class="fa fa-envelope" style="margin-right: 2px"></i>Email</mat-label>
+                    <input type="text" id="email" formControlName="email" placeholder="" matInput>
+                </mat-form-field>
+                <mat-error class="alert alert-danger" *ngIf="formErrors.email"><i class="fa fa-exclamation-triangle"></i>{{formErrors.email}}</mat-error>
+                <mat-error class="alert alert-danger" *ngIf="emailMess"><i class="fa fa-exclamation-triangle"></i>{{emailMess}}</mat-error>
+                <mat-form-field style="margin-top: 15px;">
+                    <mat-label style="color:whitesmoke"><i class="fa fa-key" style="margin-right: 2px"></i>Password</mat-label>
+                    <input type="{{passInputTtype}}" id="password" formControlName="password" placeholder="" matInput>
+                    <i [ngClass]="eyeToggle" (click)="eyeToggleIcon()" style="margin-left: -35px; color:black"></i>
+                </mat-form-field>
+                <mat-error class="alert alert-danger" *ngIf="formErrors.password"><i class="fa fa-exclamation-triangle"></i>{{formErrors.password}}</mat-error>
+                <mat-error class="alert alert-danger" *ngIf="passwordMess"><i class="fa fa-exclamation-triangle"></i>{{passwordMess}}</mat-error>
+                <div>
+                    <button mat-button (click)="login()" class="btn btn-danger login-btn" [disabled]="loginForm.invalid">
+                        <b [ngStyle]="{'display':showLoginBtn}">Login</b>
+                        <!--progress spinner -->
+                        <mat-spinner [ngStyle]="{'display':spinning}" [diameter]="30" strokeWidth="10"></mat-spinner>
+                    </button>
+                </div>
+                <div  style="text-align: right;"><a [routerLink]="['/reset-password']">Forgot Password?</a></div><br><br>
+                <mat-error *ngIf="serverErr" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i>{{serverErr}}</mat-error>
+                <div style="color:whitesmoke;">
+                    <i>New to the System? &nbsp;</i>
+                    <button class="btn btn-success"  [routerLink]="['/signup']">Register here</button>
+                </div>            
+            </form>
+        </div>
+        <hr>
+        <div fxFlex="50" fxFlex.lt-md="100" class="img-container">
+            <img fxHide.lt-sm src="../../assets/images (1).jpeg">
+            <div class="instuction-text">
+                <h5 class="text-warning"><i class="fa fa-warning"></i>&nbsp;Important Instructions</h5>
+                <i>i. Do not leave the page once you start the test.</i><br>
+                <i>ii. Do not refresh/reload the page once you start the test.</i>
+            </div>
+            <div fxHide.lt-sm class="image-reference">youth4work.com</div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--manu Modal -->
+<div id="overlay" [ngStyle]="{'display':overlay}"></div>
+    <div class="container">
+        <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayModal}">
+            <app-header [userLogin]="checkUser"></app-header>
+            <div class="modal-content">
+                <a mat-button class="button-close" (click)="closeMenuModal()">&times;</a>
+                <div class="modal-body">
+                    <button *ngIf="startquiz" class="btn btn-danger option_button" (click)="startTest()">START TEST</button>
+                    <button *ngIf="resumeQuiz" class="btn btn-warning option_button" (click)="startTest()">RESUME TEST</button>
+                    <h4 *ngIf="displayScore" class="alert alert-warning">You have taken the test! <br> Your Score: {{score}}</h4><br>
+                    <button *ngIf="displayScore" class="btn btn-danger" (click)="closeMenuModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,71 @@
+<div>
+    <form [formGroup]="questionForm" (ngSubmit)="modifyQuestion()" style="margin-top: 5%;"  novalidate>
+        <div fxLayout="row" class="form-header">
+            <h3>UPDATE QUESTION</h3>
+            <div class="flex-spacer"></div>
+            <a mat-button mat-dialog-close>&times;</a>
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column">
+            <mat-form-field fxFlex="10" fxFlex.lt-sm="100">
+                <input type="text" class="" id="num" formControlName="num" placeholder="S/N" matInput>
+            </mat-form-field>
+            <mat-form-field fxFlex="90" fxFlex.lt-sm="100">
+                <input type="text" class="" id="question" formControlName="question" placeholder="QUESTION" matInput>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column">
+            <mat-form-field fxFlex="50" fxFlex.lt-sm="100">
+                <span matPrefix>A &nbsp;</span>
+                <input type="text" class="" id="option1" formControlName="option1" placeholder="OPTION1" matInput minlength="2">
+            </mat-form-field>
+            <mat-form-field fxFlex="50" fxFlex.lt-sm="100">
+                <span matPrefix>B &nbsp;</span>
+                <input type="text" class="" id="option2" formControlName="option2" placeholder="OPTION2" matInput>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column">
+            <mat-form-field fxFlex="50" fxFlex.lt-sm="100" class="">
+                <span matPrefix>C &nbsp;</span>
+                <input type="text" class="" id="option3" formControlName="option3" placeholder="OPTION3" matInput>
+            </mat-form-field>
+            <mat-form-field fxFlex="50" fxFlex.lt-sm="100">
+                <span matPrefix>D &nbsp;</span>
+                <input type="text" class="" id="option4" formControlName="option4" placeholder="OPTION4" matInput>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field fxFlex="100" fxFlex.lt-sm="100" class="">
+                <input type="text" class="" id="corr_ans" formControlName="corr_ans" placeholder="CORRECT ANSWER" matInput>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column">
+            <mat-form-field fxFlex="25" fxFlex.lt-sm="100" class="">
+                <input type="text" class="" id="ans1" formControlName="ans1" placeholder="ANSWER1" matInput>
+            </mat-form-field>
+            <mat-form-field fxFlex="25" fxFlex.lt-sm="100" class="">
+                <input type="text" class="" id="ans2" formControlName="ans2" placeholder="ANSWER2" matInput>
+            </mat-form-field>
+            <mat-form-field fxFlex="25" fxFlex.lt-sm="100" class="">
+                <input type="text" class="" id="ans3" formControlName="ans3" placeholder="ANSWER3" matInput>
+            </mat-form-field>
+            <mat-form-field fxFlex="25" fxFlex.lt-sm="100" class="">
+                <input type="text" class="" id="ans4" formControlName="ans4" placeholder="ANSWER4" matInput>
+            </mat-form-field>
+        </div>
+        <mat-error *ngIf="requiredField" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i>{{requiredField}}</mat-error>
+        <div *ngIf="successMsg" class="alert alert-success"><i class="fa fa-check-circle"></i>{{successMsg}}</div>
+        <div *ngIf="errorMsg" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i>{{errorMsg}}</div>
+
+        <div fxHide.lt-sm fxLayoutAlign="end">
+            <button mat-button type="submit" class="btn btn-primary">UPDATE</button> 
+        </div>
+        <div fxHide.sm fxHide.gt-sm>
+            <button mat-button fxFlex="100" type="submit" class="btn btn-primary">UPDATE</button> 
+        </div>
+
+    </form>
+    <div class="container" id="spinner" [ngStyle]="{'display':spinning}" >
+        <mat-spinner></mat-spinner>
+        <h4>Saving.....</h4>
+    </div>
+</div>

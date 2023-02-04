@@ -1,0 +1,67 @@
+$formFullWidth : 100%;
+$formHalfWidth : 50%;
+
+
+
+.form-header {
+    background-color: rgb(112, 112, 175);
+    margin: 3px;
+    margin-top: -40px;
+    min-height: 40px;
+}
+
+.form-header h3 {
+    margin: 5px;
+    color: whitesmoke;
+}
+
+
+.form-header a {
+    font-size: 35px;
+    width: 50px;
+    padding-top: 5px;
+}
+
+.form-header a:hover {
+    color: red;
+    font-size: 50px;
+}
+
+
+.flex-spacer {
+    flex: 1 1 auto;
+}
+
+.msg {
+    background-color:maroon; 
+    border-radius:3px; 
+    height: 50px;
+}
+
+.modal {
+    position: absolute;
+    max-width: 600px;
+    top:50%;
+    right: 100px;
+    bottom: 0;
+    left: 0;
+    z-index: 10040;
+}
+
+#overlay {
+    position: fixed; 
+    width: 100vw; 
+    height:100vw; 
+    left: 0; 
+    top: 0; 
+    background-color: #000; 
+    opacity: 0.0;
+}
+
+#spinner {
+    position: absolute;
+    top:50%;
+    left: 40%;
+    bottom: 0;
+    z-index: 10040;
+}

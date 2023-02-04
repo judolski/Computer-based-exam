@@ -1,0 +1,46 @@
+$formwidth : 100%;
+$half-width: 50%;
+
+.full-width {
+	width: $formwidth
+}
+
+.form-header {
+	background-color: blue;
+	width: $formwidth;
+	text-align: center;
+	height: 70px;
+	margin-bottom: 10px;
+}
+
+.form-header h3{
+	padding-top: 15px;
+	color: whitesmoke;
+	margin-top: 10px;
+}
+
+form {
+	margin: 30px;
+}
+
+.form-content {
+	box-shadow: 5px 5px 5px 5px #f0eded;
+	margin: 30px;
+}
+
+mat-error {
+	margin-top: -23px; 
+	margin-bottom: 20px;
+}
+
+#spinner {
+	position: absolute;
+	top:50%;
+	left: 40%;
+	bottom: 0;
+	z-index: 10040;
+}
+
+.msg-font {
+	font-size: 18px;
+}

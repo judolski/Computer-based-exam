@@ -1,0 +1,258 @@
+<div>
+    <nav>
+        <div fxLayout="row">
+            <h5>CBT | Solution</h5>
+            <div class="flex-spacer"></div>
+            <div class="user-session" *ngIf="checkUser">
+                <span class=""><i class="fa fa-user-circle"></i>&nbsp;{{checkUser | titlecase}}</span>
+            </div>
+        </div>
+    </nav>
+    <div fxLayout="row">
+        <div class="widget-header">
+            <h6>ADMIN HOME</h6>
+        </div>
+        <div class="flex-spacer"></div>
+        <div>
+            <button mat-button class="logout" *ngIf="this.authService.isLoggedIn()" (click)="logout()">Logout</button>
+        </div>
+    </div>
+</div>
+
+<div class="widget container">
+    <div>
+        <button mat-button class="widget-content" (click)="ShowUserRecord()"><i class="fa fa-users"></i>VIEW USERS</button>
+        <button mat-button [routerLink]="['/setquestion']" class="widget-content"><i class="fa fa-plus"></i>ADD QUESTION</button>
+    </div>
+    <div>
+        <button mat-button class="widget-content"><i class="fa fa-cog"></i>MANAGE QUESTIONS</button>
+        <button mat-button class="widget-content" (click)="ShowQuestionRecord()"><i class="fa fa-file"></i>VIEW QUESTIONS</button>
+    </div>
+</div>
+
+<div id="deleteoverlay" [ngStyle]="{'display':deleteOverlay}"></div>
+
+<!-- overlay modal -->
+<div id="overlay" [ngStyle]="{'display':overlay}"></div>
+
+<!-- user record modal -->
+<div class="container-fluid fixed-top">
+    <div class="rocord-modal" [ngStyle]="{'display':recordModal}"  role="dialog">
+        <div fxLayout="row" class="search-hideRecord">
+            <div>
+                <select  class="searchType" name="searchType" [(ngModel)]="selectedSearchField">
+                    <option [(ngModel)]="option" selected hidden>Search by</option>
+                    <option  *ngFor="let selectedSearchField of searchField" >{{ selectedSearchField}}</option>
+                </select>
+            </div>
+            <div>
+                <input type="text" name="search" [disabled]="!selectedSearchField" [(ngModel)]="search" id="search" (ngModelChange)="search_record()" placeholder="{{selectedSearchField}}">
+                <!--<button mat-button (click)="search_record()" class="btn-search" [disabled]="!selectedSearchField">Search</button> -->
+            </div>
+
+            <div class="flex-spacer"></div>
+            <div>
+                <a class="hide-record" mat-button (click)="hideUserRecord()">&times;</a>
+            </div>
+        </div>
+        <div class="record-content">
+            <div class="rocord-body table-responsive card" *ngIf="checkUser">
+                <table class="table table-bordered border-primary align-middle mb-0 bg-white">
+                    <thead class="">
+                        <tr class="record-header">
+                            <th>S/N</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Gender</th>
+                            <th>Score</th>
+                            <th>Reg. date</th>
+                            <th>Exam date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="users && !(searchUser || userNotFound || noSearchRocord)">
+                        <tr *ngFor="let user of users; let i = index;">
+                            <td>{{i+1}}</td>
+                            <td>{{user.lastname}} {{user.firstname}} {{user.middlename}}</td>
+                            <td>{{user.email}}</td>
+                            <td>{{user.phone}}</td>
+                            <td>{{user.gender}}</td>
+                            <td>{{user.score}}</td>
+                            <td>{{user.createdAt | date}} {{user.createdAt | date: 'shortTime'}}</td>
+                            <td>{{user.updatedAt | date}} {{user.updatedAt | date: 'shortTime'}}</td>
+                            <td fxLayout="row">
+                                <button type="button" class="btn btn-link bg-warning btn-md text-white" (click)="modifyUserComponent(user._id)">Edit</button>
+                                <button class="btn btn-link btn-md bg-dark text-white" (click)="retakeTest(user._id)">Retake</button>
+                                <button (click)="confirmDelete(user._id)" class="btn btn-link fa fa-trash fa-lg tooltip1">
+                                    <span class="tooltiptext">Delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="searchUser && !serverErr">
+                        <tr>
+                            <td>{{1}}</td>
+                            <td>{{searchUser.lastname}} {{searchUser.firstname}} {{searchUser.middlename}}</td>
+                            <td>{{searchUser.email}}</td>
+                            <td>{{searchUser.phone}}</td>
+                            <td>{{searchUser.gender}}</td>
+                            <td>{{searchUser.score}}</td>
+                            <td>{{searchUser.createdAt | date}} {{searchUser.createdAt | date: 'shortTime'}}</td>
+                            <td>{{searchUser.updatedAt | date}} {{searchUser.updatedAt | date: 'shortTime'}}</td>
+                            <td fxLayout="row">
+                                <button class="btn btn-link bg-warning btn-md text-white" (click)="modifyUserComponent(searchUser._id)">Edit</button>
+                                <button class="btn btn-link btn-md bg-dark text-white" (click)="retakeTest(searchUser._id)">Retake</button>
+                                <button (click)="confirmDelete(searchUser._id)" class="btn btn-link fa fa-trash fa-lg tooltip1">
+                                    <span class="tooltiptext">Delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                 </table>
+                 <h4 class="no-record" *ngIf="noSearchRocord && !searchUser">{{noSearchRocord}}</h4>
+                 <h4 class="no-record" *ngIf="userNotFound && !users && !searchUser">{{userNotFound}}</h4>
+                 <mat-error *ngIf="serverErr && !users && !userNotFound" class="no-record"><i class="fa fa-exclamation-triangle"></i>{{serverErr}}</mat-error>
+                 <mat-spinner style="margin-top: 40px;" *ngIf="!users && !searchUser && !userNotFound && !serverErr" [ngStyle]="{'display': loadingUser}"></mat-spinner>    
+            </div> 
+        </div>
+    </div> 
+</div>
+
+<!-- show action errors -->
+<div class="container">
+    <div class="modal" [ngStyle]="{'display': showActionErr}" role="dialog">
+        <div class="modal-body">
+            <mat-error *ngIf="serverErr" style="overflow: hidden;" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i>{{serverErr}}</mat-error>
+            <div style="text-align: center;" class="alert alert-danger" *ngIf="sessionTimeOutErr">
+                <mat-error ><i class="fa fa-exclamation-circle"></i>&nbsp;{{sessionTimeOutErr}}</mat-error>
+                <button class="timeOutBtn" (click)="sessionTimedOut()">Ok</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Delete user confirmation modal -->
+<div class="container">
+    <div class="modal" [ngStyle]="{'display': showConfirmDelete}" role="dialog">
+        <div class="modal-content" >
+            <div class="modal-body">
+                <h3 class="">Delete Record</h3>
+                <div class="">Are you sure you wan to delete this record?</div>
+                <div class="delete-modalBtn" fxLayout="row">
+                    <button class="btn btn-secondary btn-md text-white" (click)="closeModal()">Cancel</button>
+                    <button class="btn btn-danger btn-md text-white" (click)="deleteUser(user_id)">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Question confirmation modal -->
+<div class="container">
+    <div class="modal" [ngStyle]="{'display': showQuestionDelete}" role="dialog">
+        <div class="modal-content" >
+            <div class="modal-body">
+                <h3 class="">Delete Record</h3>
+                <div class="">Are you sure you wan to delete this record?</div>
+                <div class="delete-modalBtn" fxLayout="row">
+                    <button class="btn btn-secondary btn-md text-white" (click)="closeModal()">Cancel</button>
+                    <button class="btn btn-danger btn-md text-white" (click)="deletequestion(question_id)">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin login modal -->
+ <div class="container">
+    <div class="login-modal" role="dialog" [ngStyle]="{'display':displayModal}">
+        <div class="login-content">
+            <div class="login-body">
+                <form [formGroup]="adminLoginForm" novalidate>
+                    <div class="user-icon-section">
+                        <i id="user-icon" class="fa fa-user-circle"></i>
+                        <h2>Admin</h2>
+                    </div> 
+                    <mat-form-field>
+                        <mat-label style="color:whitesmoke"><i class="fa fa-envelope" style="margin-right: 2px"></i>Username</mat-label>
+                        <input type="text" id="username" formControlName="username" placeholder="" matInput>
+                    </mat-form-field>
+                    <br>
+                    <mat-form-field style="margin-top: 15px;">
+                        <mat-label style="color:whitesmoke"><i class="fa fa-key" style="margin-right: 2px"></i>Password</mat-label>
+                        <input type="{{passInputTtype}}" id="password" formControlName="password" placeholder="" matInput>
+                        <i [ngClass]="eyeToggle" (click)="eyeToggleIcon()" style="margin-left: -35px; color:black"></i>
+                    </mat-form-field>
+                    <mat-error class="alert alert-danger" *ngIf="formErrors.password && !formErrors.username"><i class="fa fa-exclamation-triangle"></i>{{formErrors.password}}</mat-error>
+                    <mat-error class="alert alert-danger" *ngIf="formErrors.username"><i class="fa fa-exclamation-triangle"></i>{{formErrors.username}}</mat-error>
+                    <mat-error *ngIf="serverErr" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i>{{serverErr}}</mat-error>
+                    <mat-error class="alert alert-danger" *ngIf="errMess"><i class="fa fa-exclamation-triangle"></i>{{errMess}}</mat-error>
+                    <div>
+                        <button mat-button (click)="Adminlogin()" class="btn btn-danger login-btn" [disabled]="adminLoginForm.invalid">
+                            <b [ngStyle]="{'display':showLoginBtn}">Login</b>
+                            <!--progress spinner -->
+                            <mat-spinner [ngStyle]="{'display':spinning}" [diameter]="30" strokeWidth="10"></mat-spinner>
+                        </button>
+                    </div>          
+                </form>
+            </div>
+        </div>
+    </div>
+ </div>
+
+ <!-- question modal -->
+<div class="container-fluid fixed-top">
+    <div class="rocord-modal" [ngStyle]="{'display':questionModal}"  role="dialog">
+        <div fxLayout="row" class="search-hideRecord">
+            <div class="flex-spacer"></div>
+            <div>
+                <a class="hide-record" mat-button (click)="hideQuestionRecord()">&times;</a>
+            </div>
+        </div>
+        <div class="record-content">
+            <div class="rocord-body table-responsive card" *ngIf="checkUser">
+                <table class="table table-bordered border-primary align-middle mb-0 bg-white">
+                    <thead class="">
+                        <tr class="record-header">
+                            <th>S/N</th>
+                            <th>Questions</th>
+                            <th>Option 1</th>
+                            <th>Option 2</th>
+                            <th>Option 3</th>
+                            <th>Option 4</th>
+                            <th>Answer</th>
+                            <th>Input date</th>
+                            <th>modified date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="questions">
+                        <tr *ngFor="let question of questions;">
+                            <td>{{question.num}}</td>
+                            <td>{{question.question}}</td>
+                            <td>{{question.option1}}</td>
+                            <td>{{question.option2}}</td>
+                            <td>{{question.option3}}</td>
+                            <td>{{question.option4}}</td>
+                            <td>{{question.corr_ans}}</td>
+                            <td>{{question.createdAt | date}} {{question.createdAt | date: 'shortTime'}}</td>
+                            <td>{{question.updatedAt | date}} {{question.updatedAt | date: 'shortTime'}}</td>
+                            <td fxLayout="row">
+                                <button (click)=" modifyQuestionComponent(question._id)" class="btn btn-link bg-warning btn-md text-white">Edit</button>
+                                <button (click)="confirmQuestionDelete(question._id)" class="btn btn-link fa fa-trash fa-lg tooltip1">
+                                    <span class="tooltiptext">Delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                 </table>
+                 <h4 class="no-record" *ngIf="!questions">{{userNotFound}}</h4>
+                 <mat-error *ngIf="serverErr && !questions && !userNotFound" class="no-record"><i class="fa fa-exclamation-triangle"></i>{{serverErr}}</mat-error>
+                 <mat-spinner style="margin-top: 40px;" *ngIf="!questions && !userNotFound && !serverErr" [ngStyle]="{'display': loadingQuestion}"></mat-spinner>       
+            </div> 
+        </div>
+    </div> 
+</div>
+

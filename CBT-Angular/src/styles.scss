@@ -1,0 +1,11 @@
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+.custom-tooltip {
+    font-size: 14px;
+    font-weight: 550;
+    color:maroon !important;
+    padding: 3px;
+    background-color: gray;
+    border-radius: 5px;  
+}

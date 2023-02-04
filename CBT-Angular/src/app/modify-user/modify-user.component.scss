@@ -1,0 +1,48 @@
+.form-header {
+    background-color: rgb(112, 112, 175);
+    margin: 3px;
+    min-height: 40px;
+}
+
+.form-header h3 {
+    margin: 5px;
+    color: whitesmoke;
+}
+
+mat-error {
+	margin-top: -23px; 
+	margin-bottom: 20px;
+}
+
+.form-header a {
+    font-size: 35px;
+    width: 50px;
+    padding-top: 5px;
+}
+
+.form-header a:hover {
+    color: red;
+    font-size: 50px;
+}
+
+.flex-spacer {
+    flex: 1 1 auto;
+}
+
+#overlay {
+    position: fixed; 
+    width: 100vw; 
+    height:100vw; 
+    left: 0; 
+    top: 0; 
+    background-color: #000; 
+    opacity: 0.0;
+}
+
+#spinner {
+    position: absolute;
+    top:50%;
+    left: 40%;
+    bottom: 0;
+    z-index: 10040;
+}
