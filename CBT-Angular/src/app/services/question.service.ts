@@ -14,11 +14,7 @@ export class QuestionService {
   constructor(private http: HttpClient, private authService: AuthService, private userService: UserService) { }
 
   addQuestion(question:Question): Observable<any> {
-    return this.http.post(baseURL + 'question/setquestion', question)
-  }
-
-  getquestions(userSession:any) : Observable<any> {
-    return this.http.post(baseURL + 'question', userSession)
+    return this.http.post(baseURL + 'question/setquestion', question);
   }
 
 }

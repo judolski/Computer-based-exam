@@ -121,7 +121,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <h4 class="modal-title" [ngStyle]="{'color':savedScoreColour}">{{scoreSavedStutus}}</h4>
-                    <h5 *ngIf="showScore">Total score: {{ rightAnswer }}</h5>
+                    <h5 *ngIf="showScore">Total score: {{ rightAnswer }}/{{questions.length}}</h5>
                     <h5 *ngIf="showScore">Number of attempted question: {{ totalAnswered }}</h5>
                     <br>
                     <button class="btn btn-danger" (click)="closescoreModal()">Close</button>

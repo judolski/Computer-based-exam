@@ -36,5 +36,8 @@ export class UserService {
     return this.http.post<any>(baseURL + 'users/user/resetpassword', user);
   }
 
+  getquestions() : Observable<any> {
+    return this.http.get(baseURL + 'users/questions');
+  }
   
 }

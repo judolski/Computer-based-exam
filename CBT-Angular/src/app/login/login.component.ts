@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
+import { Token } from '@angular/compiler';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class LoginComponent implements OnInit {
   resumeQuiz = false;
   displayScore = false;
   score:any;
+  total:Number | any;
 
   displayModal = "none";
   spinning = "none";
@@ -86,14 +88,19 @@ export class LoginComponent implements OnInit {
       const formData = this.loginForm.value;
       this.userService.userLogin(formData).subscribe((user) => {
         if (user) {
-          this.checkUser = user.userSession.firstname;
+          this.checkUser = user.user.firstname;
           this.hideSpinner();
-          sessionStorage.setItem('user',JSON.stringify(user.userSession.email));
+          sessionStorage.setItem('token',user.token);
+          sessionStorage.setItem('user',this.checkUser);
+          sessionStorage.setItem('email',user.user.email);
           //clear previously saved score in the browser, if any
           localStorage.removeItem('score');
 
-          if (user.userSession.score == 0 || user.userSession.score > 0) {
-            this.score = user.userSession.score;
+          if (user.user.score == 0 || user.user.score > 0) {
+            this.userService.getquestions().subscribe((questions) => {
+              this.total = questions.length;
+            })
+            this.score = user.user.score;
             this.startquiz = false;
             this.displayScore = true;
            localStorage.setItem('score', JSON.stringify(this.score));

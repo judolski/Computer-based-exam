@@ -8,48 +8,6 @@ questionRouter = express.Router();
 questionRouter.use(bodyParser.json());
 
 
-questionRouter.route('/')
-.options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
-.post(cors.corsWithOptions, (req, res) => {
-    if (req.body.session) {
-        User.findOne({email: JSON.parse(req.body.session)})
-        .then((user) => {
-            if (!user) {
-                res.statusCode = 401;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({message: 'You are not logged in'});
-                return;
-            }
-            console.log('you are logged in as: ',JSON.parse(req.body.session));
-            Question.find({}).then((questions) => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type','application/json');
-                res.json(questions)
-            })
-            .catch((err) => {
-                res.statusCode = 500;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({message: 'Internal server error occur, please retry'});
-                return;
-            });
-
-        }).catch((err) => {
-            res.statusCode = 404;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({message: 'You are not logged in'});
-            return;
-        });
-        
-    }
-    else {
-        res.statusCode = 401;
-        res.setHeader('Content-Type', 'application/json');
-        res.json({message: 'You are not logged in'});
-        return;  
-    }
-    
-});
-
 
 questionRouter.route('/setquestion')
 .options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})

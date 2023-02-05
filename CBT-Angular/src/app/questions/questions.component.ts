@@ -19,8 +19,6 @@ export class QuestionsComponent implements OnInit {
   errMess: any;
   ansArr: any;
   showScore:any = false;
-  userSession: any;
-  navEvent:any;
 
   hrs:any;
   mins:any;
@@ -51,12 +49,16 @@ export class QuestionsComponent implements OnInit {
      }
 
   ngOnInit(): void {
-    this.userSession = {session: sessionStorage.getItem('user')};
-    if (localStorage.getItem('score') == null) {
-      this.questionService.getquestions(this.userSession).subscribe((questions) => {
+    let token = sessionStorage.getItem('token');
+    this.checkUser = sessionStorage.getItem('user');
+    if (!token) {
+      window.close();
+    }
+    else if (localStorage.getItem('score') == null) {
+      this.userService.getquestions().subscribe((questions) => {
         if (questions) {
           this.questions = questions;
-          this.examDuration(1)
+          this.examDuration(2)
         }
       }, err => {
         this.errMess = <any> err.error.message;
@@ -66,10 +68,6 @@ export class QuestionsComponent implements OnInit {
     else {
       this.router.navigate(['/login']);
     }
-
-    this.userService.getUser(this.userSession).subscribe((user) => {
-      this.checkUser = user.firstname;
-    })
   }
   
   ngDoCheck(): void {
@@ -121,32 +119,33 @@ export class QuestionsComponent implements OnInit {
     }
 
   saveScore() {
-    if (this.userSession) {
-      let option = {session: sessionStorage.getItem('user'), value: this.rightAnswer, fieldToUpdate: "score"}
-      this.userService.updateUser(option).subscribe((result) => {
-        localStorage.removeItem('score');
-        this.showScore = true;
-        this.authservice.logout('user');
-        if(this.rightAnswer >= 0.8*Number(this.questions.length)) {
-          this.scoreSavedStutus = "You passed!!";
-          this.savedScoreColour = "darkgreen";
-        }
-        if(this.rightAnswer < 0.8*Number(this.questions.length)) {
-          this.scoreSavedStutus = "Ouch, You failed";
-          this.savedScoreColour = "maroon";
+      let option = {email: sessionStorage.getItem('email'), value: this.rightAnswer, fieldToUpdate: "score"}
+      this.userService.updateUser(option).subscribe((response) => {
+        if (response.status) {
+          localStorage.removeItem('score');
+          this.showScore = true;
+          this.authservice.logout('token', 'user');
+          if(this.rightAnswer >= 0.8*Number(this.questions.length)) {
+            this.scoreSavedStutus = "You passed!!";
+            this.savedScoreColour = "darkgreen";
+          }
+          if(this.rightAnswer < 0.8*Number(this.questions.length)) {
+            this.scoreSavedStutus = "Ouch, You failed";
+            this.savedScoreColour = "maroon";
+          }
         }
       }, (err) => {
         this.savedScoreColour = "maroon";
         this.scoreSavedStutus = <any> err.error.message; 
       });
       this.scoreModal();
-      clearInterval(this.myFunc);        
-    }
+      clearInterval(this.myFunc);       
   }
+  
 
   checkReload() {
     window.addEventListener('beforeunload', (e) => {
-      return this.calculate();
+      this.calculate();
     })
   }
 

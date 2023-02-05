@@ -59,8 +59,7 @@
                 <a mat-button class="button-close" (click)="closeMenuModal()">&times;</a>
                 <div class="modal-body">
                     <button *ngIf="startquiz" class="btn btn-danger option_button" (click)="startTest()">START TEST</button>
-                    <button *ngIf="resumeQuiz" class="btn btn-warning option_button" (click)="startTest()">RESUME TEST</button>
-                    <h4 *ngIf="displayScore" class="alert alert-warning">You have taken the test! <br> Your Score: {{score}}</h4><br>
+                    <h4 *ngIf="displayScore" class="alert alert-warning">You have taken the test! <br> Your Score: {{score}}/{{total}}</h4><br>
                     <button *ngIf="displayScore" class="btn btn-danger" (click)="closeMenuModal()">Close</button>
                 </div>
             </div>

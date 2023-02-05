@@ -1,12 +1,14 @@
-const User  = require('../models/user');
 const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const jwt = require("jsonwebtoken");
 
+const User  = require('../models/user');
+const Question = require('../models/question')
 const cors = require('./cors');
 const mailerConfig = require('../mailer-config');
+const authenticate = require('../authenticate');
 
 userRouter = express.Router();
 userRouter.use(bodyParser.json());
@@ -68,6 +70,45 @@ userRouter.route('/signup')
     })
 })
 
+userRouter.route('/login')
+.options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
+.post(cors.corsWithOptions, (req, res, next) => {
+    User.findOne({email:req.body.email})
+    .then((user) => {
+        if (!user) {
+            res.statusCode = 401;
+            res.setHeader('Content-Type','application/json');
+            res.json({email_message: 'Invalid user'});
+            return;
+        } 
+        if (user) {
+            bcrypt.compare(req.body.password, user.password)
+            .then((result) => {
+                if (result) {
+                    let username = user.email;
+                    let token = authenticate.generateToken(username);
+                    console.log("you are logged in as " +user.email)
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type','application/json');
+                    res.json({token: token, user: user});   
+                }
+                else {
+                    res.statusCode = 401;
+                    res.setHeader('Content-Type','application/json');
+                    res.json({password_message: 'Your password is incorresct'});
+                    return;
+                }
+            })
+            .catch((err) => {
+                res.statusCode = 500;
+                res.setHeader('Content-Type','application/json');
+                res.json({messeage: err});
+                return;
+            });
+        } 
+    });
+});
+
 userRouter.route('/user')
 .options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
 .post(cors.corsWithOptions, (req, res) => {
@@ -102,16 +143,15 @@ userRouter.route('/user')
         })
     } 
 })
-.put(cors.corsWithOptions, (req, res) => {
-    if (req.body.session) {
+.put(cors.corsWithOptions, authenticate.isAuthenticated, (req, res) => {
         fieldToUpdate = req.body.fieldToUpdate;
-        User.updateOne({email: JSON.parse(req.body.session)},
+        User.updateOne({email: req.body.email},
         {$set: {[fieldToUpdate]: req.body.value}})
         .then((result) => {
             if (result && result.modifiedCount > 0) {
                 res.statusCode = 200;
                 res.setHeader('Content-Type','application/json');
-                res.json();
+                res.json({status: true});
                 return;
             }
         })
@@ -121,7 +161,6 @@ userRouter.route('/user')
             res.json({message: 'Unable to complete, please contact the administrator'});
             return;
         });
-    }
 });
 
 userRouter.route('/user/resetpassword')
@@ -213,68 +252,24 @@ userRouter.route('/user/:id')
     });
 })
 
-userRouter.route('/login')
+userRouter.route('/questions')
 .options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
-.post(cors.corsWithOptions, (req, res, next) => {
-    User.findOne({email:req.body.email})
-    .then((user) => {
-        if (!user) {
-            res.statusCode = 401;
-            res.setHeader('Content-Type','application/json');
-            res.json({email_message: 'Invalid user'});
-            console.log(user)
-            return;
-        } 
-        if (user) {
-            bcrypt.compare(req.body.password, user.password)
-            .then((result) => {
-                if (result) {
-                    req.session.regenerate((err) => {
-                        if (err) {return next(err) }
-
-                        req.session.user = user;
-
-                        req.session.save((err) => {
-                            if (err) { return next(err) }
-
-                            console.log("you are logged in as " +req.session.user.email)
-                            res.statusCode = 200;
-                            res.setHeader('Content-Type','application/json');
-                            res.json({message: 'You are Logged in Successfully!', redirect: 'http://localhost:4200/questions', userSession: req.session.user});
-                        });
-                    
-                    });
-                }
-                else {
-                    res.statusCode = 401;
-                    res.setHeader('Content-Type','application/json');
-                    res.json({password_message: 'Your password is incorresct'});
-                    return;
-                }
+.get(cors.cors, authenticate.isAuthenticated, (req, res) => {
+            Question.find({}).then((questions) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type','application/json');
+                res.json(questions)
             })
             .catch((err) => {
                 res.statusCode = 500;
-                res.setHeader('Content-Type','application/json');
-                res.json({err: err});
+                res.setHeader('Content-Type', 'application/json');
+                res.json({message: 'Internal server error occur, please retry'});
                 return;
             });
-        } 
-    });
+
 });
 
-userRouter.route('/logout')
-.options(cors.corsWithOptions, (req, res) => {res.sendStatus = 200;})
-.get(cors.cors, (req, res) => {
-    console.log(req.session.user);
-    req.session.destroy((err) => {
-        if(err) { res.end(err) }
-        else {
-            res.statusCode = 200;
-            res.setHeader('Content-Type','application/json');
-            res.json({message: 'you are logged out successfully'}) 
-        }
-    });   
-});
+
 
 
 module.exports = userRouter;
