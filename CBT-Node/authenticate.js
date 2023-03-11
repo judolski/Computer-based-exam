@@ -6,7 +6,7 @@ const RSA_PRIVATE_KEY = fs.readFileSync('./rsa_key/rsa.key');
 //const RSA_PUBLIC_KEY = fs.readFileSync('./rsa_key/rsa.key.pub');
 
 function generateToken(user) {
-    const jwtExp = 240;
+    const jwtExp = 720;
     return token = jwt.sign({user}, RSA_PRIVATE_KEY, {
     algorithm: "RS256",
     expiresIn: jwtExp
