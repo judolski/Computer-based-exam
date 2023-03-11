@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -41,14 +41,17 @@ export class AdminSectionComponent implements OnInit {
   serverErr: any;
 
   eyeToggle = "fa fa-eye";
+  password!: string;
   passInputTtype = "password";
 
   searchField = ["Phone", "Email"];
   search!: string | null;
+  highlightText = "yellow"
   option = null;
   noSearchRocord!:string | null;
   selectedSearchField:any;
   searchUser: any;
+  searchResult:any;
   token: string|any;
   sessionTimeOutErr!: string | null;
 
@@ -74,7 +77,7 @@ export class AdminSectionComponent implements OnInit {
   checkIdleUser() {
     //checking for user inactivity
     this.idleService.startWatching();
-    
+      //refreshes the token every n seconds if not idle
       let refresh = setInterval(() => {
         this.adminService.refreshToken(this.checkUser).subscribe((newToken) => {
           sessionStorage.setItem('token',newToken.token);
@@ -83,7 +86,7 @@ export class AdminSectionComponent implements OnInit {
           this.idleService.stopTimer();
           clearInterval(refresh);
         });
-      }, 120000);
+      }, 300000);
 
     //start watching if user is inactive
     this.idleService.onTimerStart().subscribe(count => {
@@ -100,7 +103,6 @@ export class AdminSectionComponent implements OnInit {
       this.idleService.stopTimer();
       clearInterval(refresh);
     });
-    //refreshes the token every n seconds if not idle
   }
 
   sessionTimedOut() {
@@ -205,12 +207,9 @@ export class AdminSectionComponent implements OnInit {
 
   retakeTest(userId?:any) {
     this.adminService.removeScore(userId).subscribe((result) => {
-      if (this.searchUser) {
-        this.showSearchRecord();
-      }
-      else if(this.users) {
+      
         this.ShowUserRecord();
-      }
+      
     }, (err) => {
       this.showActionErr = "block";
       this.serverErr = this.authService.catchAuthError(err);
@@ -241,7 +240,7 @@ export class AdminSectionComponent implements OnInit {
       data: {id: user_id},
     }).afterClosed().subscribe((close) => {
       if (this.searchUser) {
-        this.showSearchRecord();
+        //this.showSearchRecord();
       }
       else if(this.users) {
         this.ShowUserRecord();
@@ -254,7 +253,7 @@ export class AdminSectionComponent implements OnInit {
     this.adminService.deleteUser(userId).subscribe((result) => {
       if (result) {
         if (this.searchUser) {
-          this.showSearchRecord();
+          //this.showSearchRecord();
         }
         else if(this.users) {
           this.ShowUserRecord();
@@ -285,25 +284,13 @@ export class AdminSectionComponent implements OnInit {
       }, 5000);
     });
   }
-  
-  search_record() {
-    let userCopy  = this.users;
-    this.searchUser = null;
-    this.serverErr = null;
-    userCopy.filter((user:any) => {
-      let field = this.selectedSearchField.toLowerCase();
-     if(this.search == "") {
-      this.users = userCopy;
-      this.noSearchRocord = null;
-     }
-     if(user[field] == this.search) {
-      this.searchUser = user;
-     }
-     if(!userCopy.indexOf(user) && user[field] != this.search && this.search != "") {
-      this.noSearchRocord = 'No record found';
-      this.searchUser = null;
-     }
-    });
+
+  searchRecord() {
+    let field = this.selectedSearchField.toLowerCase();
+    this.searchResult = this.users.filter((user:any) => user[field].includes(this.search));
+    if(this.searchResult == "") {
+      this.noSearchRocord = "No record found"
+    }
   }
 
   confirmDelete(userId:any) {
@@ -352,16 +339,6 @@ export class AdminSectionComponent implements OnInit {
     this.authService.logout("token", "checkUser");
   }
 
-  showSearchRecord () { 
-    this.adminService.getUsers().subscribe((users) => {
-      this.loadingUser = "block";
-      this.overlay = "block";
-      this.recordModal = "block";
-      this.users = users;
-      this.search_record();
-    })
-  }
-
   ShowUserRecord() {
     this.loadingUser = "block";
     this.overlay = "block";
@@ -398,7 +375,6 @@ export class AdminSectionComponent implements OnInit {
     this.spinning = "none";
     this.showLoginBtn = "block";
   }
-
 
 
 }

@@ -42,6 +42,7 @@ import { FooterComponent } from './footer/footer.component';
 import { ModifyUserComponent } from './modify-user/modify-user.component';
 import { ModifyQuestionComponent } from './modify-question/modify-question.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { HighlightPipePipe } from './pipe/highlight-pipe.pipe';
 
 @core.NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     FooterComponent,
     ModifyUserComponent,
     ModifyQuestionComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    HighlightPipePipe,
   ],
 
   imports: [
@@ -84,12 +86,13 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     MatRadioModule,
     MatTooltipModule,
     HttpClientModule,
-    UserIdleModule.forRoot({idle: 120, timeout:6, ping: 2})
+    UserIdleModule.forRoot({idle: 600, timeout:6, ping: 2})
   ],
   providers: [
     UserService,
     QuestionService,
     AdminService,
+
     {provide: 'BaseURL', useValue:baseURL},
    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}
   ],

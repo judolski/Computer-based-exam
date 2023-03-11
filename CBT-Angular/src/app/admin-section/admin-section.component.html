@@ -37,7 +37,7 @@
 
 <!-- user record modal -->
 <div class="container-fluid fixed-top">
-    <div class="rocord-modal" [ngStyle]="{'display':recordModal}"  role="dialog">
+    <div class="" [ngStyle]="{'display':recordModal}"  role="dialog">
         <div fxLayout="row" class="search-hideRecord">
             <div>
                 <select  class="searchType" name="searchType" [(ngModel)]="selectedSearchField">
@@ -46,7 +46,7 @@
                 </select>
             </div>
             <div>
-                <input type="text" name="search" [disabled]="!selectedSearchField" [(ngModel)]="search" id="search" (ngModelChange)="search_record()" placeholder="{{selectedSearchField}}">
+                <input type="text" name="search" [disabled]="!selectedSearchField" [(ngModel)]="search" id="search" (ngModelChange)="searchRecord()" placeholder="{{selectedSearchField}}">
                 <!--<button mat-button (click)="search_record()" class="btn-search" [disabled]="!selectedSearchField">Search</button> -->
             </div>
 
@@ -56,7 +56,7 @@
             </div>
         </div>
         <div class="record-content">
-            <div class="rocord-body table-responsive card" *ngIf="checkUser">
+            <div class="table-responsive card" *ngIf="checkUser">
                 <table class="table table-bordered border-primary align-middle mb-0 bg-white">
                     <thead class="">
                         <tr class="record-header">
@@ -71,7 +71,7 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody *ngIf="users && !(searchUser || userNotFound || noSearchRocord)">
+                    <tbody *ngIf="users && !(searchResult || userNotFound || noSearchRocord)">
                         <tr *ngFor="let user of users; let i = index;">
                             <td>{{i+1}}</td>
                             <td>{{user.lastname}} {{user.firstname}} {{user.middlename}}</td>
@@ -90,12 +90,12 @@
                             </td>
                         </tr>
                     </tbody>
-                    <tbody *ngIf="searchUser && !serverErr">
-                        <tr>
-                            <td>{{1}}</td>
+                    <tbody *ngIf="searchResult && !serverErr">
+                        <tr *ngFor="let searchUser of searchResult; let i = index;">
+                            <td>{{1+i}}</td>
                             <td>{{searchUser.lastname}} {{searchUser.firstname}} {{searchUser.middlename}}</td>
-                            <td>{{searchUser.email}}</td>
-                            <td>{{searchUser.phone}}</td>
+                            <td [innerHTML]="searchUser.email | highlightPipe: search"></td>
+                            <td [innerHTML]="searchUser.phone | highlightPipe: search"></td>
                             <td>{{searchUser.gender}}</td>
                             <td>{{searchUser.score}}</td>
                             <td>{{searchUser.createdAt | date}} {{searchUser.createdAt | date: 'shortTime'}}</td>
@@ -110,7 +110,7 @@
                         </tr>
                     </tbody>
                  </table>
-                 <h4 class="no-record" *ngIf="noSearchRocord && !searchUser">{{noSearchRocord}}</h4>
+                 <h4 class="no-record" *ngIf="noSearchRocord && searchResult == '' ">{{noSearchRocord}}</h4>
                  <h4 class="no-record" *ngIf="userNotFound && !users && !searchUser">{{userNotFound}}</h4>
                  <mat-error *ngIf="serverErr && !users && !userNotFound" class="no-record"><i class="fa fa-exclamation-triangle"></i>{{serverErr}}</mat-error>
                  <mat-spinner style="margin-top: 40px;" *ngIf="!users && !searchUser && !userNotFound && !serverErr" [ngStyle]="{'display': loadingUser}"></mat-spinner>    
@@ -182,8 +182,8 @@
                     <br>
                     <mat-form-field style="margin-top: 15px;">
                         <mat-label style="color:whitesmoke"><i class="fa fa-key" style="margin-right: 2px"></i>Password</mat-label>
-                        <input type="{{passInputTtype}}" id="password" formControlName="password" placeholder="" matInput>
-                        <i [ngClass]="eyeToggle" (click)="eyeToggleIcon()" style="margin-left: -35px; color:black"></i>
+                        <input type="{{passInputTtype}}" id="password" [(ngModel)]="password" formControlName="password" placeholder="" matInput>
+                        <i *ngIf="password != '' " [ngClass]="eyeToggle" (click)="eyeToggleIcon()" style="margin-left: -35px; color:black"></i>
                     </mat-form-field>
                     <mat-error class="alert alert-danger" *ngIf="formErrors.password && !formErrors.username"><i class="fa fa-exclamation-triangle"></i>{{formErrors.password}}</mat-error>
                     <mat-error class="alert alert-danger" *ngIf="formErrors.username"><i class="fa fa-exclamation-triangle"></i>{{formErrors.username}}</mat-error>
@@ -212,7 +212,7 @@
             </div>
         </div>
         <div class="record-content">
-            <div class="rocord-body table-responsive card" *ngIf="checkUser">
+            <div class=" table-responsive card" *ngIf="checkUser">
                 <table class="table table-bordered border-primary align-middle mb-0 bg-white">
                     <thead class="">
                         <tr class="record-header">
